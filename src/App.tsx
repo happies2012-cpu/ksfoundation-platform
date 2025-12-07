@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
+import VPSDetail from "./pages/VPSDetail";
 import Admin from "./pages/Admin";
 import Settings from "./pages/Settings";
 import Billing from "./pages/Billing";
@@ -36,6 +37,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard/vps/:id"
+              element={
+                <ProtectedRoute>
+                  <VPSDetail />
                 </ProtectedRoute>
               }
             />
