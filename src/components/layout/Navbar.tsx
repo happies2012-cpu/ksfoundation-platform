@@ -1,12 +1,24 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X, ChevronDown, Globe, MessageCircle } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Menu, X, ChevronDown, Globe, MessageCircle, User, Settings, LogOut, LayoutDashboard, Shield } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { NotificationCenter } from '@/components/notifications/NotificationCenter';
 import ksLogo from '@/assets/kslogo.png';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,6 +27,11 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   const navLinks = [
     { label: 'Hosting', hasDropdown: true },
@@ -70,12 +87,59 @@ const Navbar = () => {
               <MessageCircle className="h-4 w-4" />
               <span>24/7 Support</span>
             </button>
-            <Button variant="ghost" size="sm">
-              Log In
-            </Button>
-            <Button variant="rocket" size="sm">
-              Get Started
-            </Button>
+            {user ? (
+              <>
+                <NotificationCenter />
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarFallback>
+                          {user.full_name?.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="hidden md:block">{user.full_name || user.email}</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem asChild>
+                      <Link to="/dashboard" className="flex items-center gap-2">
+                        <LayoutDashboard className="h-4 w-4" />
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                    {user.role === 'admin' && (
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin" className="flex items-center gap-2">
+                          <Shield className="h-4 w-4" />
+                          Admin Panel
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem asChild>
+                      <Link to="/dashboard/settings" className="flex items-center gap-2">
+                        <Settings className="h-4 w-4" />
+                        Settings
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/login">Log In</Link>
+                </Button>
+                <Button variant="rocket" size="sm" asChild>
+                  <Link to="/signup">Get Started</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -103,12 +167,33 @@ const Navbar = () => {
                 </button>
               ))}
               <hr className="my-2 border-border" />
-              <Button variant="ghost" className="justify-start">
-                Log In
-              </Button>
-              <Button variant="rocket">
-                Get Started
-              </Button>
+              {user ? (
+                <>
+                  <Button variant="ghost" className="justify-start" asChild>
+                    <Link to="/dashboard">Dashboard</Link>
+                  </Button>
+                  <Button variant="ghost" className="justify-start" asChild>
+                    <Link to="/dashboard/settings">Settings</Link>
+                  </Button>
+                  {user.role === 'admin' && (
+                    <Button variant="ghost" className="justify-start" asChild>
+                      <Link to="/admin">Admin Panel</Link>
+                    </Button>
+                  )}
+                  <Button variant="ghost" className="justify-start text-destructive" onClick={handleSignOut}>
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" className="justify-start" asChild>
+                    <Link to="/login">Log In</Link>
+                  </Button>
+                  <Button variant="rocket" asChild>
+                    <Link to="/signup">Get Started</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
