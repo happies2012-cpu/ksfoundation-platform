@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, Server, Cpu, HardDrive, Wifi, Shield, Zap, ArrowRight, Plus, Minus } from 'lucide-react';
+import { Check, Server, Cpu, HardDrive, Wifi, Shield, Zap, ArrowRight, Plus, Minus, Globe, Monitor } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import LiveChat from '@/components/home/LiveChat';
@@ -73,7 +73,25 @@ const VPSHosting = () => {
     ram: 4,
     storage: 80,
     bandwidth: 4,
+    os: 'ubuntu',
+    location: 'us-east',
   });
+
+  const osOptions = [
+    { value: 'ubuntu', label: 'Ubuntu 22.04 LTS', icon: '🐧' },
+    { value: 'debian', label: 'Debian 12', icon: '🐧' },
+    { value: 'centos', label: 'CentOS Stream', icon: '🐧' },
+    { value: 'windows', label: 'Windows Server 2022', icon: '🪟' },
+  ];
+
+  const locationOptions = [
+    { value: 'us-east', label: 'US East (New York)', flag: '🇺🇸' },
+    { value: 'us-west', label: 'US West (Los Angeles)', flag: '🇺🇸' },
+    { value: 'eu-west', label: 'EU West (London)', flag: '🇬🇧' },
+    { value: 'eu-central', label: 'EU Central (Frankfurt)', flag: '🇩🇪' },
+    { value: 'asia-singapore', label: 'Asia (Singapore)', flag: '🇸🇬' },
+    { value: 'asia-tokyo', label: 'Asia (Tokyo)', flag: '🇯🇵' },
+  ];
 
   const calculatePrice = () => {
     const cpuPrice = config.cpu * 2.5;
@@ -378,6 +396,60 @@ const VPSHosting = () => {
                   >
                     <Plus className="h-4 w-4" />
                   </button>
+                </div>
+              </div>
+
+              {/* OS Selection */}
+              <div className="space-y-4 md:col-span-2">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <Monitor className="h-5 w-5 text-primary" />
+                  </div>
+                  <span className="font-semibold">Operating System</span>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {osOptions.map((os) => (
+                    <button
+                      key={os.value}
+                      onClick={() => setConfig(c => ({ ...c, os: os.value }))}
+                      className={`p-4 rounded-xl border-2 transition-all ${
+                        config.os === os.value
+                          ? 'border-primary bg-primary/10'
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                    >
+                      <div className="text-2xl mb-2">{os.icon}</div>
+                      <div className="text-sm font-medium text-foreground">{os.label}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Location Selection */}
+              <div className="space-y-4 md:col-span-2">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 rounded-lg bg-secondary/10">
+                    <Globe className="h-5 w-5 text-secondary" />
+                  </div>
+                  <span className="font-semibold">Data Center Location</span>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {locationOptions.map((location) => (
+                    <button
+                      key={location.value}
+                      onClick={() => setConfig(c => ({ ...c, location: location.value }))}
+                      className={`p-4 rounded-xl border-2 transition-all text-left ${
+                        config.location === location.value
+                          ? 'border-secondary bg-secondary/10'
+                          : 'border-border hover:border-secondary/50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xl">{location.flag}</span>
+                        <span className="text-sm font-medium text-foreground">{location.label}</span>
+                      </div>
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>

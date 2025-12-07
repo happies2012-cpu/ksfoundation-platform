@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Rocket, Zap, Shield, Clock, ArrowRight, Play } from 'lucide-react';
+import ksLogo from '@/assets/kslogo.png';
+import AnimatedTechBackground from './AnimatedTechBackground';
 
 const HeroSection = () => {
   const [uptimeCount, setUptimeCount] = useState(0);
@@ -38,17 +40,26 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-      {/* Background Effects */}
+      {/* Enhanced Background Effects */}
+      <AnimatedTechBackground />
       <div className="absolute inset-0 bg-hero-pattern" />
       <div className="absolute inset-0 server-pattern opacity-5" />
-      
-      {/* Glowing Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-secondary/20 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
-      <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-accent/15 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }} />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-5xl mx-auto text-center">
+          {/* Logo Above Title */}
+          <div className="flex justify-center mb-8 animate-fade-in">
+            <div className="relative">
+              <img 
+                src={ksLogo} 
+                alt="Key Secure Foundation" 
+                className="h-24 w-24 md:h-32 md:w-32 object-contain animate-pulse-glow"
+                style={{ filter: 'drop-shadow(0 0 20px rgba(255, 107, 53, 0.5))' }}
+              />
+              <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl -z-10 animate-pulse" />
+            </div>
+          </div>
+
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8 animate-fade-in">
             <span className="relative flex h-2 w-2">

@@ -82,6 +82,51 @@ const TechIcons = {
       <path d="M17.9 17.39c-.26-.8-1.01-1.39-1.9-1.39h-1v-3a1 1 0 0 0-1-1H8v-2h2a1 1 0 0 0 1-1V7h2a2 2 0 0 0 2-2v-.41a7.984 7.984 0 0 1 2.9 12.8M11 19.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1a2 2 0 0 0 2 2v1.93M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
     </svg>
   ),
+  python: (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+      <path d="M14.5 2.5c0 .83.67 1.5 1.5 1.5h2.5c.83 0 1.5.67 1.5 1.5v3c0 .83-.67 1.5-1.5 1.5H16c-.83 0-1.5.67-1.5 1.5v1.5h-3V7.5c0-.83.67-1.5 1.5-1.5h3c.83 0 1.5-.67 1.5-1.5v-2zm-9 9c0 .83.67 1.5 1.5 1.5h2.5c.83 0 1.5.67 1.5 1.5v3c0 .83-.67 1.5-1.5 1.5H7c-.83 0-1.5.67-1.5 1.5v2c0 .83.67 1.5 1.5 1.5h3c.83 0 1.5-.67 1.5-1.5v-1.5h3V19.5c0 .83-.67 1.5-1.5 1.5h-3c-.83 0-1.5-.67-1.5-1.5v-2z"/>
+    </svg>
+  ),
+  php: (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.5 14h-2l-.5-2.5h-2L5.5 16h-2l2-8h2l-.5 2.5h2L9.5 8h2l-.5 2.5h2L12.5 8h2l-2 8zm8.5-2.5c0 .83-.67 1.5-1.5 1.5s-1.5-.67-1.5-1.5.67-1.5 1.5-1.5 1.5.67 1.5 1.5z"/>
+    </svg>
+  ),
+  mysql: (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+      <path d="M16.405 5.501c-.057 0-.112.004-.17.008h-.017c-.135.008-.27.02-.4.04-2.12.33-4.25.95-6.23 1.85-1.89.86-3.6 1.98-5.08 3.33-.06.05-.12.1-.17.15-.33.3-.64.62-.93.95-.05.06-.1.12-.14.18-.33.42-.63.87-.9 1.34-.02.04-.05.08-.07.12-.26.5-.48 1.02-.66 1.56-.02.06-.04.12-.05.18-.15.54-.26 1.1-.33 1.67-.01.08-.02.16-.02.24-.04.57-.05 1.15-.02 1.73 0 .06.01.12.02.18.05.58.13 1.16.25 1.72.02.09.05.18.08.27.18.51.4 1 .66 1.46.03.06.07.12.1.18.28.46.6.9.96 1.31.05.06.1.12.16.18.3.33.62.64.97.92.06.05.12.1.18.14.42.28.87.53 1.34.74.05.02.1.05.15.07.5.22 1.02.4 1.56.52.06.02.12.03.18.05.57.1 1.15.16 1.73.18.06 0 .12.01.18.01.58.03 1.16.02 1.73-.02.08 0 .16-.01.24-.02.57-.07 1.13-.18 1.67-.33.06-.01.12-.03.18-.05.54-.18 1.06-.4 1.56-.66.04-.02.08-.05.12-.07.47-.27.92-.58 1.34-.9.06-.04.12-.08.18-.13.33-.28.64-.6.92-.97.05-.06.1-.12.14-.18.31-.36.65-.7.96-1.1.05-.06.1-.12.15-.18.24-.36.46-.74.64-1.14.02-.05.04-.1.06-.15.2-.48.36-.98.48-1.5.02-.09.04-.18.06-.27.12-.56.2-1.14.25-1.72.01-.06.02-.12.02-.18.03-.58.02-1.16-.02-1.73 0-.08-.01-.16-.02-.24-.07-.57-.18-1.13-.33-1.67-.01-.06-.03-.12-.05-.18-.18-.54-.4-1.06-.66-1.56-.02-.04-.05-.08-.07-.12-.27-.47-.57-.92-.9-1.34-.04-.06-.09-.12-.14-.18-.29-.33-.6-.65-.93-.95-.05-.05-.11-.1-.17-.15-1.48-1.35-3.19-2.47-5.08-3.33-1.98-.9-4.1-1.52-6.23-1.85-.13-.02-.27-.03-.4-.04h-.017c-.058-.004-.113-.008-.17-.008zm-4.41 2.99c.75-.15 1.5-.25 2.25-.32.75-.07 1.5-.1 2.25-.1.75 0 1.5.03 2.25.1.75.07 1.5.17 2.25.32.38.08.75.17 1.12.27.37.1.73.22 1.08.35.35.13.69.28 1.02.44.33.16.65.33.96.52.31.19.6.4.88.62.28.22.54.45.79.7.25.25.48.51.7.79.22.28.43.57.62.88.19.31.36.63.52.96.16.33.31.67.44 1.02.13.35.25.71.35 1.08.1.37.19.74.27 1.12.15.75.25 1.5.32 2.25.07.75.1 1.5.1 2.25 0 .75-.03 1.5-.1 2.25-.07.75-.17 1.5-.32 2.25-.08.38-.17.75-.27 1.12-.1.37-.22.73-.35 1.08-.13.35-.28.69-.44 1.02-.16.33-.33.65-.52.96-.19.31-.4.6-.62.88-.22.28-.45.54-.7.79-.25.25-.51.48-.79.7-.28.22-.57.43-.88.62-.31.19-.63.36-.96.52-.33.16-.67.31-1.02.44-.35.13-.71.25-1.08.35-.37.1-.74.19-1.12.27-.75.15-1.5.25-2.25.32-.75.07-1.5.1-2.25.1-.75 0-1.5-.03-2.25-.1-.75-.07-1.5-.17-2.25-.32-.38-.08-.75-.17-1.12-.27-.37-.1-.73-.22-1.08-.35-.35-.13-.69-.28-1.02-.44-.33-.16-.65-.33-.96-.52-.31-.19-.6-.4-.88-.62-.28-.22-.54-.45-.79-.7-.25-.25-.48-.51-.7-.79-.22-.28-.43-.57-.62-.88-.19-.31-.36-.63-.52-.96-.16-.33-.31-.67-.44-1.02-.13-.35-.25-.71-.35-1.08-.1-.37-.19-.74-.27-1.12-.15-.75-.25-1.5-.32-2.25-.07-.75-.1-1.5-.1-2.25 0-.75.03-1.5.1-2.25.07-.75.17-1.5.32-2.25.08-.38.17-.75.27-1.12.1-.37.22-.73.35-1.08.13-.35.28-.69.44-1.02.16-.33.33-.65.52-.96.19-.31.4-.6.62-.88.22-.28.45-.54.7-.79.25-.25.51-.48.79-.7.28-.22.57-.43.88-.62.31-.19.63-.36.96-.52.33-.16.67-.31 1.02-.44.35-.13.71-.25 1.08-.35.37-.1.74-.19 1.12-.27z"/>
+    </svg>
+  ),
+  postgresql: (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+      <path d="M23.559 9.784c-.072-.19-.19-.36-.34-.5l-2.5-2.5c-.14-.14-.31-.27-.5-.34-.19-.07-.4-.1-.6-.1h-1.5V3.5c0-.28-.22-.5-.5-.5h-5c-.28 0-.5.22-.5.5v3.14h-1.5c-.2 0-.41.03-.6.1-.19.07-.36.2-.5.34l-2.5 2.5c-.14.14-.27.31-.34.5-.07.19-.1.4-.1.6v1.5H3.5c-.28 0-.5.22-.5.5v5c0 .28.22.5.5.5h3.14v1.5c0 .2.03.41.1.6.07.19.2.36.34.5l2.5 2.5c.14.14.31.27.5.34.19.07.4.1.6.1h1.5V20.5c0 .28.22.5.5.5h5c.28 0 .5-.22.5-.5v-3.14h1.5c.2 0 .41-.03.6-.1.19-.07.36-.2.5-.34l2.5-2.5c.14-.14.27-.31.34-.5.07-.19.1-.4.1-.6v-1.5H20.5c.28 0 .5-.22.5-.5v-5c0-.28-.22-.5-.5-.5h-3.14v-1.5c0-.2-.03-.41-.1-.6z"/>
+    </svg>
+  ),
+  redis: (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+    </svg>
+  ),
+  mongodb: (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+      <path d="M17.193 9.555c-1.264-5.58-4.252-7.414-4.573-8.115-.28-.394-.53-.954-.735-1.44-.036.495-.055.685-.523 1.184-.723.566-4.193 3.682-4.193 8.869 0 5.187 3.47 8.32 4.193 8.869.468.499.487.689.523 1.184.205-.486.455-1.046.735-1.44.321-.701 3.31-2.535 4.573-8.115.41-1.817.27-3.243.27-3.243-.17.065-.43.24-.67.465-.27.255-.27.255-.27.255zm-.376 3.382s.336.682.284 1.936c-.053 1.253-.53 3.068-1.271 4.67-.744 1.602-1.602 2.98-2.153 3.726-.551.745-1.051 1.11-1.051 1.11s.08-1.103.214-2.205c.134-1.103.214-2.205.214-2.205l-.67-.682s-.67-.682-.67-1.936c0-1.253.67-1.936.67-1.936l.67-.682s-.08-1.103-.214-2.205c-.134-1.103-.214-2.205-.214-2.205s.5-.365 1.051-1.11c.551-.745 1.409-2.124 2.153-3.726.741-1.602 1.218-3.417 1.271-4.67.052-1.254-.284-1.936-.284-1.936z"/>
+    </svg>
+  ),
+  nginx: (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+      <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18l8 4v8.64l-8 4-8-4V8.18l8-4z"/>
+    </svg>
+  ),
+  apache: (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+      <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18l8 4v8.64l-8 4-8-4V8.18l8-4z"/>
+    </svg>
+  ),
+  redis2: (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+    </svg>
+  ),
 };
 
 interface FloatingIcon {
@@ -114,8 +159,8 @@ const AnimatedTechBackground = () => {
     const iconKeys = Object.keys(TechIcons) as (keyof typeof TechIcons)[];
     const generatedIcons: FloatingIcon[] = [];
 
-    // Generate 30 floating icons
-    for (let i = 0; i < 30; i++) {
+    // Generate 50 floating icons for richer background
+    for (let i = 0; i < 50; i++) {
       generatedIcons.push({
         id: i,
         icon: iconKeys[Math.floor(Math.random() * iconKeys.length)],
@@ -134,53 +179,123 @@ const AnimatedTechBackground = () => {
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Grid Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,107,53,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,107,53,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
+      {/* Animated Grid Pattern with Motion */}
+      <div 
+        className="absolute inset-0 bg-[linear-gradient(rgba(255,107,53,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,107,53,0.05)_1px,transparent_1px)]"
+        style={{
+          backgroundSize: '60px 60px',
+          animation: 'grid-move 20s linear infinite',
+        }}
+      />
+      <div 
+        className="absolute inset-0 bg-[linear-gradient(rgba(33,150,243,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(33,150,243,0.03)_1px,transparent_1px)]"
+        style={{
+          backgroundSize: '80px 80px',
+          animation: 'grid-move-reverse 25s linear infinite',
+        }}
+      />
       
       {/* Radial Gradient Overlay */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,hsl(var(--background))_70%)]" />
 
-      {/* Floating Tech Icons */}
+      {/* Floating Tech Icons with Enhanced Animations */}
       {icons.map((item) => (
         <div
           key={item.id}
-          className={`absolute ${item.color} transition-all`}
+          className={`absolute ${item.color} transition-all hover:scale-110`}
           style={{
             left: `${item.x}%`,
             top: `${item.y}%`,
             width: `${item.size}px`,
             height: `${item.size}px`,
             opacity: item.opacity,
-            animation: `float ${item.duration}s ease-in-out infinite`,
+            animation: `float ${item.duration}s ease-in-out infinite, icon-glow ${item.duration * 0.5}s ease-in-out infinite`,
             animationDelay: `${item.delay}s`,
+            filter: 'drop-shadow(0 0 8px currentColor)',
           }}
         >
           {TechIcons[item.icon]}
         </div>
       ))}
 
-      {/* Security Shields spreading effect */}
+      {/* Enhanced Security Walls Spreading Effect */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        {[...Array(5)].map((_, i) => (
+        {[...Array(8)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-32 h-32 border border-primary/10 rounded-full animate-ping"
+            className="absolute border-2 rounded-full"
             style={{
-              animationDuration: `${3 + i * 0.5}s`,
-              animationDelay: `${i * 0.3}s`,
-              width: `${200 + i * 100}px`,
-              height: `${200 + i * 100}px`,
-              left: `${-100 - i * 50}px`,
-              top: `${-100 - i * 50}px`,
+              borderColor: `rgba(255, 107, 53, ${0.15 - i * 0.015})`,
+              width: `${150 + i * 80}px`,
+              height: `${150 + i * 80}px`,
+              left: `${-75 - i * 40}px`,
+              top: `${-75 - i * 40}px`,
+              animation: `security-spread ${4 + i * 0.6}s ease-out infinite`,
+              animationDelay: `${i * 0.4}s`,
+              boxShadow: `0 0 ${20 + i * 10}px rgba(255, 107, 53, ${0.1 - i * 0.01})`,
             }}
           />
         ))}
+        {/* Shield Icons in Security Walls */}
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={`shield-${i}`}
+            className="absolute text-primary/20"
+            style={{
+              width: '24px',
+              height: '24px',
+              left: `${50 + Math.cos(i * 30 * Math.PI / 180) * 200}px`,
+              top: `${50 + Math.sin(i * 30 * Math.PI / 180) * 200}px`,
+              animation: `shield-rotate ${8 + i}s linear infinite`,
+            }}
+          >
+            {TechIcons.shield}
+          </div>
+        ))}
       </div>
 
-      {/* Glowing Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-secondary/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1s' }} />
-      <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-accent/10 rounded-full blur-[80px] animate-pulse" style={{ animationDelay: '2s' }} />
+      {/* Glowing Orbs with Enhanced Motion */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] animate-pulse" style={{ animation: 'orb-float 8s ease-in-out infinite' }} />
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-secondary/10 rounded-full blur-[100px] animate-pulse" style={{ animation: 'orb-float 10s ease-in-out infinite', animationDelay: '1s' }} />
+      <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-accent/10 rounded-full blur-[80px] animate-pulse" style={{ animation: 'orb-float 12s ease-in-out infinite', animationDelay: '2s' }} />
+      
+      <style>{`
+        @keyframes grid-move {
+          0% { transform: translate(0, 0); }
+          100% { transform: translate(60px, 60px); }
+        }
+        @keyframes grid-move-reverse {
+          0% { transform: translate(0, 0); }
+          100% { transform: translate(-80px, -80px); }
+        }
+        @keyframes security-spread {
+          0% { 
+            transform: scale(0.8);
+            opacity: 0.8;
+          }
+          50% {
+            transform: scale(1.1);
+            opacity: 0.4;
+          }
+          100% { 
+            transform: scale(1.5);
+            opacity: 0;
+          }
+        }
+        @keyframes shield-rotate {
+          0% { transform: rotate(0deg) scale(1); }
+          50% { transform: rotate(180deg) scale(1.2); }
+          100% { transform: rotate(360deg) scale(1); }
+        }
+        @keyframes icon-glow {
+          0%, 100% { filter: drop-shadow(0 0 4px currentColor); }
+          50% { filter: drop-shadow(0 0 12px currentColor); }
+        }
+        @keyframes orb-float {
+          0%, 100% { transform: translate(0, 0); }
+          50% { transform: translate(30px, -30px); }
+        }
+      `}</style>
     </div>
   );
 };
