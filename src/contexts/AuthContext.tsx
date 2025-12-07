@@ -27,15 +27,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error('Error refreshing user:', error);
       setUser(null);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSupabaseUser(session?.user ?? null);
       if (session?.user) {
-        refreshUser();
+        await refreshUser();
       } else {
         setLoading(false);
       }
@@ -44,10 +46,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSupabaseUser(session?.user ?? null);
       if (session?.user) {
-        refreshUser();
+        await refreshUser();
       } else {
         setUser(null);
         setLoading(false);
@@ -71,6 +73,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await authApi.signOut();
     setUser(null);
     setSupabaseUser(null);
+    setLoading(false);
   };
 
   return (
