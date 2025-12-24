@@ -1,26 +1,27 @@
 import { 
-  Zap, Shield, Server, Globe, 
+  Users, Zap, Shield, Globe, 
   Clock, Headphones, Database, Lock,
-  Cpu, RefreshCw, Wifi, BarChart3
+  Cpu, RefreshCw, Wifi, BarChart3,
+  MessageCircle, FileText, Calendar, CheckCircle
 } from 'lucide-react';
 
 const features = [
   {
-    icon: Zap,
-    title: 'Lightning Fast',
-    description: 'NVMe SSD storage and LiteSpeed cache for blazing performance.',
+    icon: Users,
+    title: 'Team Collaboration',
+    description: 'Real-time collaboration with your team members on tasks and projects.',
     color: 'primary',
   },
   {
-    icon: Shield,
-    title: 'Enterprise Security',
-    description: 'Free SSL, DDoS protection, and malware scanning included.',
+    icon: Zap,
+    title: 'Drag & Drop Interface',
+    description: 'Intuitive drag-and-drop task management for seamless workflow.',
     color: 'success',
   },
   {
     icon: Clock,
-    title: '99.9% Uptime',
-    description: 'Guaranteed uptime backed by our service level agreement.',
+    title: 'Real-Time Updates',
+    description: 'Instant updates across all devices with WebSocket connections.',
     color: 'secondary',
   },
   {
@@ -30,51 +31,51 @@ const features = [
     color: 'accent',
   },
   {
-    icon: Globe,
-    title: 'Global CDN',
-    description: 'Cloudflare CDN included for worldwide fast loading.',
+    icon: MessageCircle,
+    title: 'Team Chat',
+    description: 'Built-in messaging system for team communication.',
     color: 'primary',
   },
   {
     icon: Database,
-    title: 'Daily Backups',
-    description: 'Automatic daily backups with one-click restore.',
+    title: 'Secure Data Storage',
+    description: 'Enterprise-grade security with encrypted data storage.',
     color: 'success',
   },
   {
     icon: Lock,
-    title: 'Free SSL',
-    description: 'Unlimited free SSL certificates for all your domains.',
+    title: 'Access Control',
+    description: 'Granular permissions and role-based access control.',
     color: 'secondary',
   },
   {
     icon: RefreshCw,
-    title: 'Free Migration',
-    description: 'We migrate your website for free, no downtime.',
+    title: 'Auto-Save',
+    description: 'Never lose your work with automatic saving.',
     color: 'accent',
   },
   {
     icon: Cpu,
-    title: 'AI Tools',
-    description: 'AI-powered website builder and optimization tools.',
+    title: 'Performance Optimized',
+    description: 'Blazing-fast performance with optimized frontend and backend.',
     color: 'primary',
   },
   {
-    icon: Wifi,
-    title: 'Unlimited Bandwidth',
-    description: 'No limits on traffic, grow without restrictions.',
+    icon: FileText,
+    title: 'File Attachments',
+    description: 'Attach files to tasks and share documents with your team.',
     color: 'success',
   },
   {
-    icon: Server,
-    title: '1-Click Installs',
-    description: 'WordPress, Joomla, Drupal, and 100+ apps ready.',
+    icon: Calendar,
+    title: 'Due Dates & Reminders',
+    description: 'Set deadlines and receive timely reminders for tasks.',
     color: 'secondary',
   },
   {
     icon: BarChart3,
-    title: 'Analytics',
-    description: 'Built-in analytics to track your site performance.',
+    title: 'Analytics Dashboard',
+    description: 'Track team productivity and project progress with detailed analytics.',
     color: 'accent',
   },
 ];
@@ -89,10 +90,10 @@ const FeaturesGrid = () => {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-5xl font-black mb-4">
-            Everything You Need to <span className="gradient-text-blue">Succeed Online</span>
+            Everything You Need to <span className="gradient-text-blue">Boost Productivity</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Powerful features included with every hosting plan. No hidden fees, no surprises.
+            Powerful features included with every plan. No hidden fees, no surprises.
           </p>
         </div>
 

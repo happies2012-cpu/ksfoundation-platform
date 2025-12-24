@@ -85,7 +85,12 @@ export class WorkflowEngine {
   }
 
   // Auto-validation: Validate data before processing
-  async validateVPSConfig(config: any): Promise<{ valid: boolean; errors: string[] }> {
+  async validateVPSConfig(config: {
+    name: string;
+    cpu: number;
+    ram: number;
+    storage: number;
+  }): Promise<{ valid: boolean; errors: string[] }> {
     const errors: string[] = [];
 
     if (!config.name || config.name.length < 3) {

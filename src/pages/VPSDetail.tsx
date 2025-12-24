@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -34,21 +34,16 @@ const VPSDetail = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadVPS();
-  }, [id]);
-
-  const loadVPS = async () => {
-    if (!id) return;
-
+  const loadVPS = useCallback(async () => {
+    setLoading(true);
     try {
       const instances = await vpsApi.getInstances();
-      const instance = instances.find((i) => i.id === id);
+      const instance = instances.find((v) => v.id === id);
       
       if (!instance) {
         toast({
           title: 'VPS not found',
-          description: 'The VPS instance you are looking for does not exist.',
+          description: 'The requested VPS instance could not be found.',
           variant: 'destructive',
         });
         navigate('/dashboard');
@@ -56,17 +51,23 @@ const VPSDetail = () => {
       }
 
       setVps(instance);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: 'Error loading VPS',
-        description: error.message,
+        description: (error as Error).message,
         variant: 'destructive',
       });
       navigate('/dashboard');
     } finally {
       setLoading(false);
     }
-  };
+  }, [id, navigate]);
+
+  useEffect(() => {
+    if (id) {
+      loadVPS();
+    }
+  }, [id, loadVPS]);
 
   const handleRestart = async () => {
     if (!vps) return;
@@ -78,10 +79,10 @@ const VPSDetail = () => {
         title: 'VPS Restarted',
         description: 'Your VPS has been restarted successfully.',
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: 'Error',
-        description: error.message,
+        description: (error as Error).message,
         variant: 'destructive',
       });
     } finally {
@@ -104,10 +105,10 @@ const VPSDetail = () => {
         description: 'Your VPS has been terminated.',
       });
       navigate('/dashboard');
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: 'Error',
-        description: error.message,
+        description: (error as Error).message,
         variant: 'destructive',
       });
     } finally {

@@ -1,28 +1,24 @@
 import { useState, useEffect } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import {
-  Users,
-  Server,
-  DollarSign,
-  TrendingUp,
-  Activity,
-  Shield,
-  AlertCircle,
-} from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { adminApi } from '@/lib/api';
 import { User, VPSInstance } from '@/lib/supabase';
+import { Users, Server, DollarSign, TrendingUp, Download } from 'lucide-react';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { toast } from '@/hooks/use-toast';
 
 const Admin = () => {
   const { user } = useAuth();
-  const [analytics, setAnalytics] = useState<any>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [vpsInstances, setVpsInstances] = useState<VPSInstance[]>([]);
+  const [analytics, setAnalytics] = useState({
+    totalUsers: 0,
+    totalVPS: 0,
+    activeVPS: 0,
+    totalRevenue: 0,
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,29 +27,52 @@ const Admin = () => {
 
   const loadData = async () => {
     try {
-      const [analyticsData, usersData, vpsData] = await Promise.all([
-        adminApi.getAnalytics(),
+      const [usersData, vpsData, analyticsData] = await Promise.all([
         adminApi.getAllUsers(),
         adminApi.getAllVPSInstances(),
+        adminApi.getAnalytics(),
       ]);
-      setAnalytics(analyticsData);
+      
       setUsers(usersData);
       setVpsInstances(vpsData);
-    } catch (error: any) {
-      toast({
-        title: 'Error loading data',
-        description: error.message,
-        variant: 'destructive',
-      });
+      setAnalytics(analyticsData);
+    } catch (error) {
+      console.error('Error loading admin data:', error);
     } finally {
       setLoading(false);
     }
   };
 
+  // Prepare data for charts
+  const userData = [
+    { name: 'Users', count: analytics.totalUsers },
+    { name: 'Active VPS', count: analytics.activeVPS },
+  ];
+
+  const vpsStatusData = [
+    { name: 'Active', value: vpsInstances.filter(v => v.status === 'active').length },
+    { name: 'Provisioning', value: vpsInstances.filter(v => v.status === 'provisioning').length },
+    { name: 'Suspended', value: vpsInstances.filter(v => v.status === 'suspended').length },
+    { name: 'Terminated', value: vpsInstances.filter(v => v.status === 'terminated').length },
+  ];
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
+  const exportData = () => {
+    // In a real implementation, this would export data to CSV
+    alert('Data export functionality would be implemented here');
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          </div>
+        </div>
+        <Footer />
       </div>
     );
   }
@@ -62,22 +81,23 @@ const Admin = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-black mb-2">
-            Admin <span className="gradient-text-orange">Dashboard</span>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-black">
+            <span className="gradient-text-orange">Admin Dashboard</span>
           </h1>
-          <p className="text-muted-foreground">
-            Manage users, VPS instances, and platform analytics
-          </p>
+          <Button variant="outline" onClick={exportData}>
+            <Download className="mr-2 h-4 w-4" />
+            Export Data
+          </Button>
         </div>
 
-        {/* Analytics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <Card className="glass-card p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Total Users</p>
-                <p className="text-3xl font-black">{analytics?.totalUsers || 0}</p>
+                <p className="text-3xl font-black">{analytics.totalUsers}</p>
               </div>
               <div className="p-3 rounded-xl bg-primary/10">
                 <Users className="h-6 w-6 text-primary" />
@@ -89,7 +109,7 @@ const Admin = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Total VPS</p>
-                <p className="text-3xl font-black">{analytics?.totalVPS || 0}</p>
+                <p className="text-3xl font-black">{analytics.totalVPS}</p>
               </div>
               <div className="p-3 rounded-xl bg-secondary/10">
                 <Server className="h-6 w-6 text-secondary" />
@@ -101,10 +121,10 @@ const Admin = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Active VPS</p>
-                <p className="text-3xl font-black">{analytics?.activeVPS || 0}</p>
+                <p className="text-3xl font-black">{analytics.activeVPS}</p>
               </div>
               <div className="p-3 rounded-xl bg-success/10">
-                <Activity className="h-6 w-6 text-success" />
+                <TrendingUp className="h-6 w-6 text-success" />
               </div>
             </div>
           </Card>
@@ -113,43 +133,100 @@ const Admin = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Total Revenue</p>
-                <p className="text-3xl font-black">${analytics?.totalRevenue?.toFixed(2) || '0.00'}</p>
+                <p className="text-3xl font-black">${analytics.totalRevenue.toFixed(2)}</p>
               </div>
-              <div className="p-3 rounded-xl bg-accent/10">
-                <DollarSign className="h-6 w-6 text-accent" />
+              <div className="p-3 rounded-xl bg-destructive/10">
+                <DollarSign className="h-6 w-6 text-destructive" />
               </div>
             </div>
           </Card>
         </div>
 
-        {/* Users Table */}
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <Card className="glass-card p-6">
+            <h3 className="text-xl font-bold mb-4">User & VPS Overview</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={userData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="count" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+
+          <Card className="glass-card p-6">
+            <h3 className="text-xl font-bold mb-4">VPS Status Distribution</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={vpsStatusData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                >
+                  {vpsStatusData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </Card>
+        </div>
+
+        {/* User Management */}
         <Card className="glass-card p-6 mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">Users</h2>
-            <Badge variant="outline">{users.length} total</Badge>
+            <h3 className="text-xl font-bold">User Management</h3>
+            <span className="text-sm text-muted-foreground">{users.length} users</span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left p-3 text-sm font-semibold">Name</th>
-                  <th className="text-left p-3 text-sm font-semibold">Email</th>
-                  <th className="text-left p-3 text-sm font-semibold">Role</th>
-                  <th className="text-left p-3 text-sm font-semibold">Joined</th>
+                <tr className="border-b">
+                  <th className="text-left py-3 px-4">User</th>
+                  <th className="text-left py-3 px-4">Email</th>
+                  <th className="text-left py-3 px-4">Role</th>
+                  <th className="text-left py-3 px-4">Joined</th>
+                  <th className="text-left py-3 px-4">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {users.slice(0, 10).map((u) => (
-                  <tr key={u.id} className="border-b border-border/50">
-                    <td className="p-3">{u.full_name || 'N/A'}</td>
-                    <td className="p-3">{u.email}</td>
-                    <td className="p-3">
-                      <Badge variant={u.role === 'admin' ? 'default' : 'outline'}>
-                        {u.role}
-                      </Badge>
+                {users.map((u) => (
+                  <tr key={u.id} className="border-b hover:bg-muted/50">
+                    <td className="py-3 px-4">
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold mr-2">
+                          {u.full_name?.charAt(0) || u.email?.charAt(0) || 'U'}
+                        </div>
+                        <span>{u.full_name || 'N/A'}</span>
+                      </div>
                     </td>
-                    <td className="p-3 text-sm text-muted-foreground">
+                    <td className="py-3 px-4">{u.email}</td>
+                    <td className="py-3 px-4">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        u.role === 'admin' 
+                          ? 'bg-destructive/10 text-destructive' 
+                          : 'bg-muted text-muted-foreground'
+                      }`}>
+                        {u.role}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4">
                       {new Date(u.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="py-3 px-4">
+                      <Button variant="outline" size="sm">
+                        Edit
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -158,46 +235,52 @@ const Admin = () => {
           </div>
         </Card>
 
-        {/* VPS Instances Table */}
+        {/* VPS Management */}
         <Card className="glass-card p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold">VPS Instances</h2>
-            <Badge variant="outline">{vpsInstances.length} total</Badge>
+            <h3 className="text-xl font-bold">VPS Management</h3>
+            <span className="text-sm text-muted-foreground">{vpsInstances.length} instances</span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left p-3 text-sm font-semibold">Name</th>
-                  <th className="text-left p-3 text-sm font-semibold">User</th>
-                  <th className="text-left p-3 text-sm font-semibold">Status</th>
-                  <th className="text-left p-3 text-sm font-semibold">Specs</th>
-                  <th className="text-left p-3 text-sm font-semibold">Created</th>
+                <tr className="border-b">
+                  <th className="text-left py-3 px-4">Name</th>
+                  <th className="text-left py-3 px-4">User</th>
+                  <th className="text-left py-3 px-4">Status</th>
+                  <th className="text-left py-3 px-4">Resources</th>
+                  <th className="text-left py-3 px-4">Created</th>
+                  <th className="text-left py-3 px-4">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {vpsInstances.slice(0, 10).map((vps) => (
-                  <tr key={vps.id} className="border-b border-border/50">
-                    <td className="p-3 font-medium">{vps.name}</td>
-                    <td className="p-3 text-sm text-muted-foreground">{vps.user_id.slice(0, 8)}...</td>
-                    <td className="p-3">
-                      <Badge
-                        className={
-                          vps.status === 'active'
-                            ? 'bg-success/20 text-success'
-                            : vps.status === 'provisioning'
-                            ? 'bg-primary/20 text-primary'
-                            : 'bg-muted text-muted-foreground'
-                        }
-                      >
+                {vpsInstances.map((vps) => (
+                  <tr key={vps.id} className="border-b hover:bg-muted/50">
+                    <td className="py-3 px-4 font-medium">{vps.name}</td>
+                    <td className="py-3 px-4">
+                      {users.find(u => u.id === vps.user_id)?.email || 'Unknown'}
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        vps.status === 'active' 
+                          ? 'bg-success/10 text-success' 
+                          : vps.status === 'provisioning'
+                          ? 'bg-warning/10 text-warning'
+                          : 'bg-destructive/10 text-destructive'
+                      }`}>
                         {vps.status}
-                      </Badge>
+                      </span>
                     </td>
-                    <td className="p-3 text-sm text-muted-foreground">
-                      {vps.cpu}vCPU / {vps.ram}GB / {vps.storage}GB
+                    <td className="py-3 px-4">
+                      {vps.cpu} CPU, {vps.ram}GB RAM
                     </td>
-                    <td className="p-3 text-sm text-muted-foreground">
+                    <td className="py-3 px-4">
                       {new Date(vps.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="py-3 px-4">
+                      <Button variant="outline" size="sm">
+                        Manage
+                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -212,4 +295,3 @@ const Admin = () => {
 };
 
 export default Admin;
-

@@ -8,6 +8,7 @@ interface AuthContextType {
   supabaseUser: SupabaseUser | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signOut: () => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -64,6 +65,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await refreshUser();
   };
 
+  const signInWithGoogle = async () => {
+    await authApi.signInWithGoogle();
+    // Note: Google OAuth redirect will handle the rest
+  };
+
   const signUp = async (email: string, password: string, fullName: string) => {
     await authApi.signUp(email, password, fullName);
     await refreshUser();
@@ -83,6 +89,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         supabaseUser,
         loading,
         signIn,
+        signInWithGoogle,
         signUp,
         signOut,
         refreshUser,
@@ -100,4 +107,3 @@ export const useAuth = () => {
   }
   return context;
 };
-

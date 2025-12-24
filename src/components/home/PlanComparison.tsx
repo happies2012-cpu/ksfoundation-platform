@@ -1,67 +1,64 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Check, Zap, Crown, Rocket, Server, Star } from 'lucide-react';
+import { Check, Users, Zap, Crown, Rocket, Star } from 'lucide-react';
 
 const plans = [
   {
-    name: 'Starter',
+    name: 'Free',
     icon: Zap,
-    originalPrice: 11.99,
-    price: 1.99,
+    price: 0,
     period: '/month',
-    discount: '83% OFF',
+    discount: 'Forever Free',
     popular: false,
     features: [
-      '1 Website',
-      '50 GB SSD Storage',
-      '100 GB Bandwidth',
-      'Free SSL Certificate',
-      'Weekly Backups',
-      '1 Email Account',
-      '24/7 Support',
+      '1 Workspace',
+      'Up to 5 Team Members',
+      'Basic Task Management',
+      'File Attachments (10MB)',
+      'Email Support',
+      '24/7 Community Support',
     ],
     color: 'secondary',
   },
   {
-    name: 'Business',
+    name: 'Pro',
     icon: Rocket,
-    originalPrice: 15.99,
-    price: 2.99,
+    originalPrice: 12.99,
+    price: 9.99,
     period: '/month',
-    discount: '81% OFF',
+    discount: '23% OFF',
     popular: true,
     features: [
-      '100 Websites',
-      '200 GB NVMe Storage',
-      'Unlimited Bandwidth',
-      'Free SSL Certificate',
-      'Daily Backups',
-      'Free Email Accounts',
-      'Free Domain (1 Year)',
-      'Free CDN',
-      'SSH Access',
+      'Unlimited Workspaces',
+      'Up to 25 Team Members',
+      'Advanced Task Management',
+      'File Attachments (100MB)',
+      'Priority Support',
+      'Custom Branding',
+      'Time Tracking',
+      'Advanced Reporting',
     ],
     color: 'primary',
   },
   {
-    name: 'Cloud Pro',
+    name: 'Team',
     icon: Crown,
-    originalPrice: 29.99,
-    price: 5.99,
+    originalPrice: 24.99,
+    price: 19.99,
     period: '/month',
-    discount: '80% OFF',
+    discount: '20% OFF',
     popular: false,
     features: [
-      '300 Websites',
-      '500 GB NVMe Storage',
-      'Unlimited Bandwidth',
-      'Free SSL Certificate',
-      'Daily Backups',
-      'Free Email Accounts',
-      'Free Domain (1 Year)',
-      'Priority Support',
-      'Dedicated Resources',
-      'AI Tools Included',
+      'Unlimited Workspaces',
+      'Unlimited Team Members',
+      'Advanced Task Management',
+      'File Attachments (1GB)',
+      '24/7 Priority Support',
+      'Custom Branding',
+      'Time Tracking',
+      'Advanced Reporting',
+      'Single Sign-On (SSO)',
+      'API Access',
     ],
     color: 'accent',
   },
@@ -86,7 +83,7 @@ const PlanComparison = () => {
             Choose Your <span className="gradient-text-orange">Perfect Plan</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Powerful hosting solutions for every need. All plans include 30-day money-back guarantee.
+            Powerful task management solutions for every team. All plans include 14-day free trial.
           </p>
         </div>
 
@@ -156,9 +153,11 @@ const PlanComparison = () => {
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-foreground">{plan.name}</h3>
-                      <span className="px-2 py-0.5 rounded bg-success/20 text-success text-xs font-bold">
-                        {plan.discount}
-                      </span>
+                      {plan.discount && (
+                        <span className="px-2 py-0.5 rounded bg-success/20 text-success text-xs font-bold">
+                          {plan.discount}
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -166,14 +165,16 @@ const PlanComparison = () => {
                   <div className="mb-6">
                     <div className="flex items-baseline gap-2">
                       <span className="text-4xl md:text-5xl font-black text-foreground">
-                        ${plan.price}
+                        {plan.price === 0 ? 'Free' : `$${plan.price}`}
                       </span>
                       <span className="text-muted-foreground">{plan.period}</span>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      <span className="line-through">${plan.originalPrice}</span>
-                      <span className="ml-2">when you renew</span>
-                    </p>
+                    {plan.originalPrice && (
+                      <p className="text-sm text-muted-foreground mt-1">
+                        <span className="line-through">${plan.originalPrice}</span>
+                        <span className="ml-2">when you renew</span>
+                      </p>
+                    )}
                   </div>
 
                   {/* CTA Button */}
@@ -205,10 +206,9 @@ const PlanComparison = () => {
         {/* Bottom CTA */}
         <div className="text-center mt-12">
           <p className="text-muted-foreground mb-4">
-            Need more power? Check out our{' '}
-            <a href="#" className="text-primary hover:underline">VPS Hosting</a>
-            {' '}or{' '}
-            <a href="#" className="text-primary hover:underline">Dedicated Servers</a>
+            Need more features? Check out our{' '}
+            <a href="#" className="text-primary hover:underline">Enterprise Plan</a>
+            {' '}for custom solutions.
           </p>
           <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">

@@ -18,6 +18,7 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 import { vpsApi, subscriptionApi, invoiceApi } from '@/lib/api';
 import { VPSInstance, Subscription, Invoice } from '@/lib/supabase';
+import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { toast } from '@/hooks/use-toast';
@@ -43,10 +44,10 @@ const Dashboard = () => {
       setVpsInstances(vps);
       setSubscriptions(subs);
       setInvoices(invs);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: 'Error loading data',
-        description: error.message,
+        description: (error as Error).message,
         variant: 'destructive',
       });
     } finally {
@@ -72,11 +73,7 @@ const Dashboard = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   return (
@@ -245,4 +242,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-

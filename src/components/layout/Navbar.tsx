@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { Bell, Menu, X, User, LogOut, Home, Server, Cloud, Globe, Mail, Settings, CreditCard, Users } from 'lucide-react';
+import { RealtimeNotifications } from '@/components/notifications/RealtimeNotifications';
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,197 +14,218 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Menu, X, ChevronDown, Globe, MessageCircle, User, Settings, LogOut, LayoutDashboard, Shield } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { NotificationCenter } from '@/components/notifications/NotificationCenter';
-import ksLogo from '@/assets/kslogo.png';
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
+    try {
+      await signOut();
+      navigate('/');
+    } catch (error) {
+      console.error('Failed to sign out:', error);
+    }
   };
 
-  const navLinks = [
-    { label: 'Hosting', hasDropdown: true },
-    { label: 'Domains', hasDropdown: true },
-    { label: 'Website Builder', hasDropdown: false },
-    { label: 'VPS', hasDropdown: false },
-    { label: 'Email', hasDropdown: false },
-  ];
-
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-background/95 backdrop-blur-xl border-b border-border/50 shadow-lg'
-          : 'bg-transparent'
-      }`}
-    >
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <img 
-              src={ksLogo} 
-              alt="Key Secure Foundation" 
-              className="h-12 w-12 object-contain"
-            />
-            <span className="text-xl lg:text-2xl font-bold hidden sm:block">
-              <span className="gradient-text-orange">Key Secure</span>
-              <span className="text-foreground"> Foundation</span>
-            </span>
-          </Link>
+    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur">
+      <div className="container flex h-16 items-center justify-between px-4">
+        {/* Logo */}
+        <Link to="/" className="flex items-center space-x-2">
+          <img src="/logo192.png" alt="KSR Foundation" className="h-8 w-8" />
+        </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <button
-                key={link.label}
-                className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/50"
-              >
-                {link.label}
-                {link.hasDropdown && <ChevronDown className="h-4 w-4" />}
-              </button>
-            ))}
-          </div>
-
-          {/* Desktop Actions */}
-          <div className="hidden lg:flex items-center gap-3">
-            <button className="flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-              <Globe className="h-4 w-4" />
-              <span>EN</span>
-            </button>
-            <button className="flex items-center gap-1.5 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-              <MessageCircle className="h-4 w-4" />
-              <span>24/7 Support</span>
-            </button>
-            {user ? (
-              <>
-                <NotificationCenter />
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback>
-                          {user.full_name?.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="hidden md:block">{user.full_name || user.email}</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuItem asChild>
-                      <Link to="/dashboard" className="flex items-center gap-2">
-                        <LayoutDashboard className="h-4 w-4" />
-                        Dashboard
-                      </Link>
-                    </DropdownMenuItem>
-                    {user.role === 'admin' && (
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin" className="flex items-center gap-2">
-                          <Shield className="h-4 w-4" />
-                          Admin Panel
-                        </Link>
-                      </DropdownMenuItem>
-                    )}
-                    <DropdownMenuItem asChild>
-                      <Link to="/dashboard/settings" className="flex items-center gap-2">
-                        <Settings className="h-4 w-4" />
-                        Settings
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Sign Out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
-            ) : (
-              <>
-                <Button variant="ghost" size="sm" asChild>
-                  <Link to="/login">Log In</Link>
-                </Button>
-                <Button variant="rocket" size="sm" asChild>
-                  <Link to="/signup">Get Started</Link>
-                </Button>
-              </>
-            )}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="lg:hidden p-2 text-foreground"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-6">
+          <Link 
+            to="/dashboard" 
+            className="text-sm font-medium transition-colors hover:text-primary"
           >
-            {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+            Dashboard
+          </Link>
+          <Link 
+            to="/dashboard/workspaces" 
+            className="text-sm font-medium transition-colors hover:text-primary"
+          >
+            Workspaces
+          </Link>
+          <Link 
+            to="/vps" 
+            className="text-sm font-medium transition-colors hover:text-primary"
+          >
+            VPS
+          </Link>
+          <Link 
+            to="/wordpress-hosting" 
+            className="text-sm font-medium transition-colors hover:text-primary"
+          >
+            WordPress
+          </Link>
+          <Link 
+            to="/cloud-hosting" 
+            className="text-sm font-medium transition-colors hover:text-primary"
+          >
+            Cloud
+          </Link>
+          <Link 
+            to="/domains" 
+            className="text-sm font-medium transition-colors hover:text-primary"
+          >
+            Domains
+          </Link>
+        </nav>
+
+        {/* User Actions */}
+        <div className="flex items-center space-x-2">
+          {user ? (
+            <>
+              <ThemeToggle />
+              <RealtimeNotifications onNotificationCountChange={setNotificationCount} />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.avatar_url || ''} alt={user.full_name || user.email} />
+                      <AvatarFallback>
+                        {user.full_name?.charAt(0) || user.email.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <div className="flex items-center justify-between px-2 py-1.5">
+                    <p className="text-sm font-medium leading-none">{user.full_name || user.email}</p>
+                  </div>
+                  <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                    {user.email}
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard/profile" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard/settings" className="cursor-pointer">
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Settings</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard/billing" className="cursor-pointer">
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      <span>Billing</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard/workspaces" className="cursor-pointer">
+                      <Users className="mr-2 h-4 w-4" />
+                      <span>Workspaces</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          ) : (
+            <>
+              <ThemeToggle />
+              <Button variant="ghost" asChild>
+                <Link to="/login">Login</Link>
+              </Button>
+              <Button variant="rocket" asChild>
+                <Link to="/signup">Sign Up</Link>
+              </Button>
+            </>
+          )}
+
+          {/* Mobile Menu */}
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="md:hidden">
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-64">
+              <nav className="flex flex-col space-y-4 pt-8">
+                <Link 
+                  to="/dashboard" 
+                  className="text-sm font-medium transition-colors hover:text-primary"
+                >
+                  Dashboard
+                </Link>
+                <Link 
+                  to="/dashboard/workspaces" 
+                  className="text-sm font-medium transition-colors hover:text-primary"
+                >
+                  Workspaces
+                </Link>
+                <Link 
+                  to="/vps" 
+                  className="text-sm font-medium transition-colors hover:text-primary"
+                >
+                  VPS
+                </Link>
+                <Link 
+                  to="/wordpress-hosting" 
+                  className="text-sm font-medium transition-colors hover:text-primary"
+                >
+                  WordPress
+                </Link>
+                <Link 
+                  to="/cloud-hosting" 
+                  className="text-sm font-medium transition-colors hover:text-primary"
+                >
+                  Cloud
+                </Link>
+                <Link 
+                  to="/domains" 
+                  className="text-sm font-medium transition-colors hover:text-primary"
+                >
+                  Domains
+                </Link>
+                {user && (
+                  <>
+                    <Link 
+                      to="/dashboard/profile" 
+                      className="text-sm font-medium transition-colors hover:text-primary"
+                    >
+                      Profile
+                    </Link>
+                    <Link 
+                      to="/dashboard/settings" 
+                      className="text-sm font-medium transition-colors hover:text-primary"
+                    >
+                      Settings
+                    </Link>
+                    <Link 
+                      to="/dashboard/billing" 
+                      className="text-sm font-medium transition-colors hover:text-primary"
+                    >
+                      Billing
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="text-left text-sm font-medium transition-colors hover:text-primary"
+                    >
+                      Log out
+                    </button>
+                  </>
+                )}
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden bg-background/98 backdrop-blur-xl border-t border-border">
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex flex-col gap-2">
-              {navLinks.map((link) => (
-                <button
-                  key={link.label}
-                  className="flex items-center justify-between px-4 py-3 text-foreground hover:bg-muted rounded-lg transition-colors"
-                >
-                  {link.label}
-                  {link.hasDropdown && <ChevronDown className="h-4 w-4" />}
-                </button>
-              ))}
-              <hr className="my-2 border-border" />
-              {user ? (
-                <>
-                  <Button variant="ghost" className="justify-start" asChild>
-                    <Link to="/dashboard">Dashboard</Link>
-                  </Button>
-                  <Button variant="ghost" className="justify-start" asChild>
-                    <Link to="/dashboard/settings">Settings</Link>
-                  </Button>
-                  {user.role === 'admin' && (
-                    <Button variant="ghost" className="justify-start" asChild>
-                      <Link to="/admin">Admin Panel</Link>
-                    </Button>
-                  )}
-                  <Button variant="ghost" className="justify-start text-destructive" onClick={handleSignOut}>
-                    Sign Out
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button variant="ghost" className="justify-start" asChild>
-                    <Link to="/login">Log In</Link>
-                  </Button>
-                  <Button variant="rocket" asChild>
-                    <Link to="/signup">Get Started</Link>
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </nav>
+    </header>
   );
 };
 

@@ -1,5 +1,4 @@
 import { Shield, Lock, Eye, Server, Fingerprint, AlertTriangle } from 'lucide-react';
-import ksLogo from '@/assets/kslogo.png';
 
 const securityFeatures = [
   {
@@ -54,8 +53,8 @@ const SecuritySection = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
           {/* Centered Logo */}
           <img
-            src={ksLogo}
-            alt="Key Secure Foundation"
+            src="/logo512.png"
+            alt="TaskFlow"
             className="w-32 h-32 object-contain opacity-20 animate-pulse"
           />
           

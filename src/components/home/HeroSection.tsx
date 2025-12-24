@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Rocket, Zap, Shield, Clock, ArrowRight, Play } from 'lucide-react';
-import ksLogo from '@/assets/kslogo.png';
+import { CheckCircle, Users, Zap, Clock, ArrowRight, Play, Shield } from 'lucide-react';
 import AnimatedTechBackground from './AnimatedTechBackground';
 
 const HeroSection = () => {
@@ -31,8 +30,8 @@ const HeroSection = () => {
 
     const timer = setTimeout(() => {
       animateCounter(setUptimeCount, 99.9, 2000);
-      animateCounter(setSpeedCount, 0.3, 2000);
-      animateCounter(setCustomersCount, 3, 2000);
+      animateCounter(setSpeedCount, 100, 2000);
+      animateCounter(setCustomersCount, 50, 2000);
     }, 500);
 
     return () => clearTimeout(timer);
@@ -50,45 +49,32 @@ const HeroSection = () => {
           {/* Logo Above Title */}
           <div className="flex justify-center mb-8 animate-fade-in">
             <div className="relative">
-              <img 
-                src={ksLogo} 
-                alt="Key Secure Foundation" 
-                className="h-24 w-24 md:h-32 md:w-32 object-contain animate-pulse-glow"
+              <img
+                src="/logo512.png"
+                alt="KSR Foundation"
+                className="h-48 w-48 object-contain animate-pulse-glow"
                 style={{ filter: 'drop-shadow(0 0 20px rgba(255, 107, 53, 0.5))' }}
               />
               <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl -z-10 animate-pulse" />
             </div>
           </div>
-
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8 animate-fade-in">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
-            </span>
-            <span className="text-sm font-medium text-primary">
-              Trusted by 3M+ Websites Worldwide
-            </span>
-          </div>
-
-          {/* Main Heading */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight animate-slide-up">
-            <span className="text-foreground">Launch Your Website</span>
+          
+          <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
+            <span className="gradient-text-orange">Premium Hosting</span>
             <br />
-            <span className="gradient-text-orange">At Rocket Speed</span>
+            <span className="text-foreground">Lightning Fast</span>
           </h1>
-
-          {/* Subheading */}
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            Premium web hosting with blazing-fast servers, enterprise security, and 24/7 expert support. 
-            Start building your online empire today.
+          
+          <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
+            Experience blazing-fast web hosting with 99.9% uptime guarantee. 
+            VPS, cloud hosting, and domain services powered by cutting-edge technology.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-slide-up" style={{ animationDelay: '0.4s' }}>
             <Button variant="rocket" size="xl" className="group">
-              <Rocket className="h-5 w-5 group-hover:animate-rocket-launch" />
-              Start Free Trial
+              <CheckCircle className="h-5 w-5 group-hover:animate-rocket-launch" />
+              Get Started Free
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Button>
             <Button variant="outline" size="xl" className="group">
@@ -117,10 +103,10 @@ const HeroSection = () => {
                   <Zap className="h-5 w-5 text-primary" />
                 </div>
                 <span className="text-3xl md:text-4xl font-black gradient-text-orange">
-                  {speedCount}s
+                  {speedCount}x
                 </span>
               </div>
-              <p className="text-sm text-muted-foreground">Avg. Load Time</p>
+              <p className="text-sm text-muted-foreground">Productivity Boost</p>
             </div>
 
             <div className="glass-card p-6 rounded-2xl group hover:border-secondary/50 transition-all duration-300">
@@ -129,10 +115,10 @@ const HeroSection = () => {
                   <Shield className="h-5 w-5 text-secondary" />
                 </div>
                 <span className="text-3xl md:text-4xl font-black gradient-text-blue">
-                  {customersCount}M+
+                  {customersCount}K+
                 </span>
               </div>
-              <p className="text-sm text-muted-foreground">Happy Customers</p>
+              <p className="text-sm text-muted-foreground">Teams Empowered</p>
             </div>
           </div>
 
@@ -140,10 +126,10 @@ const HeroSection = () => {
           <div className="mt-12 flex flex-wrap justify-center items-center gap-6 opacity-60">
             <span className="text-xs uppercase tracking-wider text-muted-foreground">Trusted by</span>
             <div className="flex items-center gap-8 text-muted-foreground">
-              <span className="font-bold text-lg">WordPress</span>
-              <span className="font-bold text-lg">Shopify</span>
-              <span className="font-bold text-lg">WooCommerce</span>
-              <span className="font-bold text-lg">Magento</span>
+              <span className="font-bold text-lg">Slack</span>
+              <span className="font-bold text-lg">Notion</span>
+              <span className="font-bold text-lg">Trello</span>
+              <span className="font-bold text-lg">Asana</span>
             </div>
           </div>
         </div>

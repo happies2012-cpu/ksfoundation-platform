@@ -1,4 +1,5 @@
-import { supabase, User, VPSInstance, Subscription, Invoice, Notification } from './supabase';
+import { supabase, User, VPSInstance, Subscription, Invoice, Notification, Workspace, WorkspaceMember, WorkspaceInvite, Project, Task } from './supabase';
+import { emailService } from './email';
 
 // Auth API
 export const authApi = {
@@ -20,6 +21,17 @@ export const authApi = {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
+    });
+    if (error) throw error;
+    return data;
+  },
+
+  async signInWithGoogle() {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
     });
     if (error) throw error;
     return data;
@@ -48,6 +60,431 @@ export const authApi = {
     if (error) throw error;
     return data as User;
   },
+};
+
+// User API
+export const userApi = {
+  async updateUserProfile(userId: string, updates: Partial<User>) {
+    const { data, error } = await supabase
+      .from('users')
+      .update(updates)
+      .eq('id', userId)
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data;
+  },
+
+  async uploadAvatar(file: File, userId: string) {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${userId}/avatar.${fileExt}`;
+    const filePath = `avatars/${fileName}`;
+    
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file, { upsert: true });
+      
+    if (uploadError) throw uploadError;
+    
+    const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
+    return data.publicUrl;
+  }
+};
+
+// Workspaces API
+export const workspacesApi = {
+  async getWorkspaces(): Promise<Workspace[]> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+
+    const { data, error } = await supabase
+      .from('workspaces')
+      .select(`
+        *,
+        workspace_members(role)
+      `)
+      .eq('workspace_members.user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  async createWorkspace(name: string, description?: string): Promise<Workspace> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+
+    const { data, error } = await supabase
+      .from('workspaces')
+      .insert({
+        name,
+        description,
+        owner_id: user.id,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    // Add owner as member
+    await supabase
+      .from('workspace_members')
+      .insert({
+        workspace_id: data.id,
+        user_id: user.id,
+        role: 'owner',
+      });
+
+    return data;
+  },
+
+  async updateWorkspace(workspaceId: string, updates: Partial<Workspace>): Promise<Workspace> {
+    const { data, error } = await supabase
+      .from('workspaces')
+      .update(updates)
+      .eq('id', workspaceId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async deleteWorkspace(workspaceId: string): Promise<void> {
+    const { error } = await supabase
+      .from('workspaces')
+      .delete()
+      .eq('id', workspaceId);
+
+    if (error) throw error;
+  },
+
+  async getWorkspaceMembers(workspaceId: string): Promise<(WorkspaceMember & { user: User })[]> {
+    const { data, error } = await supabase
+      .from('workspace_members')
+      .select(`
+        *,
+        user:users(id, email, full_name, avatar_url)
+      `)
+      .eq('workspace_id', workspaceId);
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  async inviteMember(workspaceId: string, email: string, role: 'admin' | 'member' = 'member'): Promise<WorkspaceInvite> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+
+    const { data, error } = await supabase
+      .from('workspace_invites')
+      .insert({
+        workspace_id: workspaceId,
+        email,
+        role,
+        invited_by: user.id,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async getInvites(): Promise<WorkspaceInvite[]> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+
+    const { data, error } = await supabase
+      .from('workspace_invites')
+      .select(`
+        *,
+        workspace:workspaces(name)
+      `)
+      .eq('email', user.email)
+      .eq('accepted', false);
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  async acceptInvite(inviteId: string): Promise<void> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+
+    // Get the invite
+    const { data: invite, error: inviteError } = await supabase
+      .from('workspace_invites')
+      .select('*')
+      .eq('id', inviteId)
+      .single();
+
+    if (inviteError) throw inviteError;
+
+    // Add user as member
+    const { error: memberError } = await supabase
+      .from('workspace_members')
+      .insert({
+        workspace_id: invite.workspace_id,
+        user_id: user.id,
+        role: invite.role,
+        invited_by: invite.invited_by,
+        joined_at: new Date().toISOString(),
+      });
+
+    if (memberError) throw memberError;
+
+    // Mark invite as accepted
+    const { error: updateError } = await supabase
+      .from('workspace_invites')
+      .update({ accepted: true })
+      .eq('id', inviteId);
+
+    if (updateError) throw updateError;
+  },
+
+  async removeMember(memberId: string): Promise<void> {
+    const { error } = await supabase
+      .from('workspace_members')
+      .delete()
+      .eq('id', memberId);
+
+    if (error) throw error;
+  }
+};
+
+// Projects API
+export const projectsApi = {
+  async getProjects(workspaceId: string): Promise<Project[]> {
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('workspace_id', workspaceId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  async createProject(workspaceId: string, name: string, description?: string, color?: string): Promise<Project> {
+    const { data, error } = await supabase
+      .from('projects')
+      .insert({
+        workspace_id: workspaceId,
+        name,
+        description,
+        color,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async updateProject(projectId: string, updates: Partial<Project>): Promise<Project> {
+    const { data, error } = await supabase
+      .from('projects')
+      .update(updates)
+      .eq('id', projectId)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  async deleteProject(projectId: string): Promise<void> {
+    const { error } = await supabase
+      .from('projects')
+      .delete()
+      .eq('id', projectId);
+
+    if (error) throw error;
+  }
+};
+
+// Tasks API
+export const tasksApi = {
+  async getTasks(workspaceId: string, projectId?: string): Promise<Task[]> {
+    let query = supabase
+      .from('tasks')
+      .select(`
+        *,
+        assignee:users(id, full_name, avatar_url),
+        project:projects(name, color)
+      `)
+      .eq('workspace_id', workspaceId)
+      .order('position', { ascending: true });
+
+    if (projectId) {
+      query = query.eq('project_id', projectId);
+    }
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+    return data || [];
+  },
+
+  async createTask(workspaceId: string, projectId: string | null, title: string, description?: string, assigneeId?: string): Promise<Task> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Not authenticated');
+
+    // Get the next position
+    const { data: lastTask } = await supabase
+      .from('tasks')
+      .select('position')
+      .eq('workspace_id', workspaceId)
+      .order('position', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    const nextPosition = lastTask ? lastTask.position + 1 : 0;
+
+    const taskData = {
+      workspace_id: workspaceId,
+      project_id: projectId,
+      title,
+      description,
+      status: 'todo',
+      priority: 'medium',
+      creator_id: user.id,
+      position: nextPosition,
+      assignee_id: assigneeId,
+    };
+
+    const { data, error } = await supabase
+      .from('tasks')
+      .insert(taskData)
+      .select(`
+        *,
+        assignee:users(id, full_name, avatar_url, email),
+        project:projects(name, color)
+      `)
+      .single();
+
+    if (error) throw error;
+
+    // Send notification if task is assigned to someone
+    if (assigneeId) {
+      const { data: assigneeData, error: assigneeError } = await supabase
+        .from('users')
+        .select('email, full_name')
+        .eq('id', assigneeId)
+        .single();
+
+      if (assigneeData && !assigneeError) {
+        // Create in-app notification
+        await notificationApi.create({
+          user_id: assigneeId,
+          type: 'info',
+          title: 'Task Assigned',
+          message: `You have been assigned to task: ${data.title}`,
+          action_url: `/dashboard/workspaces/${workspaceId}/tasks`,
+        });
+
+        // Send email notification
+        const { data: workspaceData } = await supabase
+          .from('workspaces')
+          .select('name')
+          .eq('id', workspaceId)
+          .single();
+          
+        if (workspaceData) {
+          await emailService.sendTaskAssignment(
+            assigneeData as User, 
+            data.title, 
+            workspaceData.name
+          );
+        }
+      }
+    }
+
+    return data;
+  },
+
+  async updateTask(taskId: string, updates: Partial<Task>): Promise<Task> {
+    // Get current task to check if assignee is changing
+    const { data: currentTask } = await supabase
+      .from('tasks')
+      .select('assignee_id')
+      .eq('id', taskId)
+      .single();
+
+    const { data, error } = await supabase
+      .from('tasks')
+      .update(updates)
+      .eq('id', taskId)
+      .select(`
+        *,
+        assignee:users(id, full_name, avatar_url, email),
+        project:projects(name, color)
+      `)
+      .single();
+
+    if (error) throw error;
+
+    // Send notification if task is assigned to someone new
+    if (updates.assignee_id && updates.assignee_id !== currentTask?.assignee_id) {
+      const { data: assigneeData, error: assigneeError } = await supabase
+        .from('users')
+        .select('email, full_name')
+        .eq('id', updates.assignee_id)
+        .single();
+
+      if (assigneeData && !assigneeError) {
+        // Create in-app notification
+        await notificationApi.create({
+          user_id: updates.assignee_id,
+          type: 'info',
+          title: 'Task Assigned',
+          message: `You have been assigned to task: ${data.title}`,
+          action_url: `/dashboard/workspaces/${data.workspace_id}/tasks`,
+        });
+
+        // Send email notification
+        const { data: workspaceData } = await supabase
+          .from('workspaces')
+          .select('name')
+          .eq('id', data.workspace_id)
+          .single();
+          
+        if (workspaceData) {
+          await emailService.sendTaskAssignment(
+            assigneeData as User, 
+            data.title, 
+            workspaceData.name
+          );
+        }
+      }
+    }
+
+    return data;
+  },
+
+  async deleteTask(taskId: string): Promise<void> {
+    const { error } = await supabase
+      .from('tasks')
+      .delete()
+      .eq('id', taskId);
+
+    if (error) throw error;
+  },
+
+  async reorderTasks(taskIds: string[]): Promise<void> {
+    const updates = taskIds.map((id, index) => ({
+      id,
+      position: index,
+    }));
+
+    const { error } = await supabase
+      .from('tasks')
+      .upsert(updates);
+
+    if (error) throw error;
+  }
 };
 
 // VPS API
@@ -318,4 +755,3 @@ export const adminApi = {
     };
   },
 };
-

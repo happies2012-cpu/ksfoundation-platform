@@ -20,14 +20,14 @@ const CTASection = () => {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
             </span>
-            <span className="text-sm font-medium text-success">Limited Time: 83% OFF</span>
+            <span className="text-sm font-medium text-success">Limited Time: 23% OFF</span>
           </div>
 
           <h2 className="text-3xl md:text-5xl lg:text-6xl font-black mb-6">
-            Ready to <span className="gradient-text-orange">Launch</span> Your Website?
+            Ready to <span className="gradient-text-orange">Boost</span> Your Team's Productivity?
           </h2>
           <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-            Join millions of websites powered by KSFoundation. Start with our risk-free 30-day money-back guarantee.
+            Join thousands of teams using our task management platform. Start with our risk-free 14-day trial.
           </p>
 
           {/* CTA Buttons */}
@@ -46,7 +46,7 @@ const CTASection = () => {
           <div className="flex flex-wrap justify-center gap-8 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
               <Shield className="h-5 w-5 text-success" />
-              30-Day Money Back
+              14-Day Free Trial
             </span>
             <span className="flex items-center gap-2">
               <Clock className="h-5 w-5 text-success" />

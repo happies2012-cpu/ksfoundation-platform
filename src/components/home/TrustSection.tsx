@@ -2,33 +2,33 @@ import { Star, Quote, Award, Users, Globe2, Shield } from 'lucide-react';
 
 const testimonials = [
   {
-    name: 'Sarah Johnson',
-    role: 'E-commerce Owner',
-    avatar: 'SJ',
+    name: 'Alex Thompson',
+    role: 'Product Manager',
+    avatar: 'AT',
     rating: 5,
-    text: 'KSFoundation transformed my online store. The speed is incredible and support is always there when I need them.',
+    text: 'This app revolutionized how our team works. Task management has never been easier!',
   },
   {
-    name: 'Michael Chen',
-    role: 'Web Developer',
-    avatar: 'MC',
+    name: 'Jessica Park',
+    role: 'Startup Founder',
+    avatar: 'JP',
     rating: 5,
-    text: 'Best hosting I\'ve used in 10 years. The one-click WordPress installer saved me hours of work.',
+    text: 'The real-time collaboration features saved us countless hours in meetings. Highly recommend!',
   },
   {
-    name: 'Emily Roberts',
-    role: 'Blogger',
-    avatar: 'ER',
+    name: 'Marcus Rivera',
+    role: 'Dev Team Lead',
+    avatar: 'MR',
     rating: 5,
-    text: 'My blog loads in under a second now! The free SSL and CDN make it a no-brainer choice.',
+    text: 'Finally a task manager that understands how developers work. The drag-and-drop interface is genius.',
   },
 ];
 
 const stats = [
-  { icon: Users, value: '3M+', label: 'Happy Customers' },
-  { icon: Globe2, value: '50M+', label: 'Websites Hosted' },
+  { icon: Users, value: '50K+', label: 'Teams Empowered' },
+  { icon: Globe2, value: '1M+', label: 'Tasks Completed' },
   { icon: Shield, value: '99.9%', label: 'Uptime SLA' },
-  { icon: Award, value: '4.6/5', label: 'Trustpilot Rating' },
+  { icon: Award, value: '4.8/5', label: 'User Rating' },
 ];
 
 const TrustSection = () => {
@@ -63,10 +63,10 @@ const TrustSection = () => {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-5xl font-black mb-4">
-            Loved by <span className="gradient-text-orange">Millions</span> Worldwide
+            Loved by <span className="gradient-text-orange">Thousands</span> of Teams
           </h2>
           <p className="text-lg text-muted-foreground">
-            Join millions of satisfied customers who trust us with their online presence.
+            Join thousands of productive teams who trust us with their task management.
           </p>
         </div>
 

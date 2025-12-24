@@ -8,6 +8,11 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     persistSession: true,
     autoRefreshToken: true,
   },
+  realtime: {
+    params: {
+      eventsPerSecond: 10,
+    },
+  },
 });
 
 // Database Types
@@ -16,6 +21,7 @@ export interface User {
   email: string;
   full_name: string | null;
   avatar_url: string | null;
+  bio: string | null;
   role: 'user' | 'admin';
   created_at: string;
   updated_at: string;
@@ -39,18 +45,104 @@ export interface VPSInstance {
   updated_at: string;
 }
 
+export interface Workspace {
+  id: string;
+  name: string;
+  description: string | null;
+  owner_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WorkspaceMember {
+  id: string;
+  workspace_id: string;
+  user_id: string;
+  role: 'owner' | 'admin' | 'member';
+  invited_by: string | null;
+  invited_at: string;
+  joined_at: string | null;
+  created_at: string;
+}
+
+export interface WorkspaceInvite {
+  id: string;
+  workspace_id: string;
+  email: string;
+  role: 'owner' | 'admin' | 'member';
+  invited_by: string;
+  accepted: boolean;
+  created_at: string;
+  expires_at: string;
+}
+
+export interface Project {
+  id: string;
+  workspace_id: string;
+  name: string;
+  description: string | null;
+  color: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Task {
+  id: string;
+  workspace_id: string;
+  project_id: string | null;
+  title: string;
+  description: string | null;
+  status: 'todo' | 'in_progress' | 'review' | 'done';
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  assignee_id: string | null;
+  creator_id: string;
+  due_date: string | null;
+  position: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TaskAttachment {
+  id: string;
+  task_id: string;
+  file_name: string;
+  file_url: string;
+  file_size: number | null;
+  uploaded_by: string;
+  created_at: string;
+}
+
+export interface TaskComment {
+  id: string;
+  task_id: string;
+  user_id: string;
+  content: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Label {
+  id: string;
+  workspace_id: string;
+  name: string;
+  color: string;
+  created_at: string;
+}
+
 export interface Subscription {
   id: string;
   user_id: string;
   vps_id: string;
   plan_id: string;
   status: 'active' | 'cancelled' | 'past_due' | 'expired';
+  plan: 'free' | 'pro' | 'team';
   billing_cycle: 'monthly' | 'annual';
   amount: number;
   currency: string;
   current_period_start: string;
   current_period_end: string;
   cancel_at_period_end: boolean;
+  stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
   created_at: string;
   updated_at: string;
@@ -59,7 +151,7 @@ export interface Subscription {
 export interface Invoice {
   id: string;
   user_id: string;
-  subscription_id: string;
+  subscription_id: string | null;
   amount: number;
   currency: string;
   status: 'draft' | 'open' | 'paid' | 'void' | 'uncollectible';
@@ -80,3 +172,13 @@ export interface Notification {
   created_at: string;
 }
 
+export interface ActivityFeed {
+  id: string;
+  workspace_id: string;
+  user_id: string;
+  action: string;
+  entity_type: string;
+  entity_id: string | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+}
