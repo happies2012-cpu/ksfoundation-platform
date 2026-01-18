@@ -21,12 +21,12 @@ import "./index.css";
 window.onerror = function (msg, url, line, col, error) {
   const root = document.getElementById('root');
   if (root) {
-    root.innerHTML = \`<div style="color:red; padding:20px; font-family:monospace; font-size:16px; background:#fff; white-space:pre-wrap;">
+    root.innerHTML = `<div style="color:red; padding:20px; font-family:monospace; font-size:16px; background:#fff; white-space:pre-wrap;">
       <h1>CRITICAL ERROR (Global)</h1>
-      <p style="font-weight:bold">\${msg}</p>
-      <p>Location: \${url} : \${line}:\${col}</p>
-      <p>Stack: \${error?.stack || 'No stack trace'}</p>
-    </div>\`;
+      <p style="font-weight:bold">${msg}</p>
+      <p>Location: ${url} : ${line}:${col}</p>
+      <p>Stack: ${error?.stack || 'No stack trace'}</p>
+    </div>`;
   }
 };
 
@@ -37,8 +37,8 @@ try {
   createRoot(rootElement).render(<App />);
 } catch (error: any) {
   console.error("CRITICAL RENDER ERROR:", error);
-  document.body.innerHTML = \`<div style="color:white; background:red; padding:20px; font-family:monospace;">
+  document.body.innerHTML = `<div style="color:white; background:red; padding:20px; font-family:monospace;">
     <h1>Application Failed to Start</h1>
-    <pre>\${error?.stack || error.message || String(error)}</pre>
-  </div>\`;
+    <pre>${error?.stack || error.message || String(error)}</pre>
+  </div>`;
 }
