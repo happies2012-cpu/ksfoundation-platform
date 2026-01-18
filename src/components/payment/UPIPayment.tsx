@@ -78,7 +78,7 @@ export const UPIPayment: React.FC<UPIPaymentProps> = ({
                     <div className="flex items-center justify-between p-3 rounded-lg bg-secondary/50 border border-white/10">
                         <div className="flex flex-col">
                             <span className="text-xs text-muted-foreground">UPI ID</span>
-                            <span className="font-mono text-sm font-bold text-indigo-300">{upiId}</span>
+                            <span className="font-mono text-sm font-bold text-indigo-300">Ksfoundation@ybl</span>
                         </div>
                         <Button variant="ghost" size="icon" onClick={handleCopyUPI} className="hover:bg-indigo-500/20 hover:text-indigo-300">
                             <Copy className="w-4 h-4" />

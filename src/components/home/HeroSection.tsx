@@ -58,15 +58,15 @@ const HeroSection = () => {
               <div className="absolute inset-0 bg-primary/20 rounded-full blur-2xl -z-10 animate-pulse" />
             </div>
           </div>
-          
+
           <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
             <span className="gradient-text-orange">Premium Hosting</span>
             <br />
             <span className="text-foreground">Lightning Fast</span>
           </h1>
-          
+
           <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-            Experience blazing-fast web hosting with 99.9% uptime guarantee. 
+            Experience blazing-fast web hosting with 99.9% uptime guarantee.
             VPS, cloud hosting, and domain services powered by cutting-edge technology.
           </p>
 
