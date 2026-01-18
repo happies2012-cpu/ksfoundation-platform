@@ -19,8 +19,8 @@ export default function DebugPage() {
 
     const checkConnection = async () => {
         try {
-            // 1. Check DB Connection by fetching user count (or just checking if we can select)
-            const { count, error } = await supabase.from('users').select('*', { count: 'exact', head: true });
+            // 1. Check DB Connection
+            const { count, error } = await supabase.from('test_connection').select('*', { count: 'exact', head: true });
 
             if (error && error.code !== 'PGRST116') { // PGRST116 is just no rows, which is fine for connection check
                 // If table doesn't exist, it might be 404. Let's try to just get session.
