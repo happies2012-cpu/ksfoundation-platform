@@ -39,11 +39,12 @@ export default function DebugPage() {
             // We will list what WE have configured.
             setAuthProviders(['email', 'phone', 'google', 'facebook', 'linkedin']);
 
-        } catch (e: any) {
-            console.error("DB Connection Check Failed:", e);
+        } catch (e: unknown) {
+            const error = e as Error;
+            console.error("DB Connection Check Failed:", error);
 
             // Graceful Fallback for Auth Errors (to allow UI testing)
-            if (e.message.includes('401') || e.message.includes('403')) {
+            if (error.message?.includes('401') || error.message?.includes('403')) {
                 setDbStatus('connected'); // Visually pass for now
                 setDbError('Auth Key Invalid - Running in Restricted Mode (UI Only)');
             } else {

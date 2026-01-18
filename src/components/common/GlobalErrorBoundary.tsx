@@ -2,8 +2,13 @@ import { useRouteError } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
 
+interface RouterError {
+  statusText?: string;
+  message?: string;
+}
+
 export const GlobalErrorBoundary = () => {
-  const error = useRouteError() as any;
+  const error = useRouteError() as RouterError;
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-4 text-center">
@@ -12,7 +17,7 @@ export const GlobalErrorBoundary = () => {
       </div>
       <h1 className="text-2xl font-bold">Something went wrong</h1>
       <p className="text-muted-foreground max-w-md">
-        {error?.message || "An unexpected error occurred. Please try again later."}
+        {error?.message || error?.statusText || "An unexpected error occurred. Please try again later."}
       </p>
       <Button onClick={() => window.location.reload()} variant="outline">
         Reload Page

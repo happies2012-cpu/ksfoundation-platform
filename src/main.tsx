@@ -5,7 +5,7 @@ import App from "./App.tsx";
 import "./index.css";
 
 // CRITICAL: Global Error Handler for Production Debugging
-window.onerror = function (msg, url, line, col, error) {
+window.onerror = function (msg, url, line, col, error: Error | undefined) {
   const root = document.getElementById('root');
   if (root) {
     root.innerHTML = `<div style="color:red; padding:20px; font-family:monospace; font-size:16px; background:#fff; white-space:pre-wrap;">
@@ -18,15 +18,15 @@ window.onerror = function (msg, url, line, col, error) {
 };
 
 // Simple Error Boundary Component
-class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, error: any }> {
-  constructor(props: any) {
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, error: Error | null }> {
+  constructor(props: { children: React.ReactNode }) {
     super(props);
     this.state = { hasError: false, error: null };
   }
-  static getDerivedStateFromError(error: any) {
+  static getDerivedStateFromError(error: Error) {
     return { hasError: true, error };
   }
-  componentDidCatch(error: any, errorInfo: any) {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error("React Error Boundary Caught:", error, errorInfo);
   }
   render() {
@@ -53,10 +53,13 @@ try {
       </ErrorBoundary>
     </React.StrictMode>
   );
-} catch (error: any) {
+} catch (error: unknown) {
   console.error("CRITICAL RENDER ERROR:", error);
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  const errorStack = error instanceof Error ? error.stack : '';
+
   document.body.innerHTML = `<div style="color:white; background:red; padding:20px; font-family:monospace;">
     <h1>Application Failed to Start</h1>
-    <pre>${error?.stack || error.message || String(error)}</pre>
+    <pre>${errorStack || errorMessage}</pre>
   </div>`;
 }

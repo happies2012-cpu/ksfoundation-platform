@@ -107,7 +107,14 @@ const Hero = () => {
     );
 };
 
-const FeatureCard = ({ title, description, icon: Icon, className }: any) => (
+interface FeatureCardProps {
+    title: string;
+    description: string;
+    icon: React.ElementType;
+    className?: string;
+}
+
+const FeatureCard = ({ title, description, icon: Icon, className }: FeatureCardProps) => (
     <motion.div
         whileHover={{ scale: 1.02 }}
         className={`relative overflow-hidden rounded-2xl p-8 border border-white/5 bg-white/5 backdrop-blur-sm ${className}`}

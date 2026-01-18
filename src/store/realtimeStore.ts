@@ -7,7 +7,7 @@ export interface SystemLog {
   level: 'info' | 'warning' | 'error' | 'success';
   message: string;
   timestamp: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   userId?: string;
   ip?: string;
 }
@@ -30,7 +30,7 @@ export interface RealtimeState {
   threatCount: number;
   authAttempts: number;
   lastUpdate: string;
-  
+
   // Actions
   addLog: (log: Omit<SystemLog, 'id' | 'timestamp'>) => void;
   updateMetrics: (metrics: Partial<SystemMetrics>) => void;
@@ -105,7 +105,7 @@ export const useRealtimeStore = create<RealtimeState>()(
 
       simulateRealtimeUpdates: () => {
         const { updateMetrics, addLog } = get();
-        
+
         // Simulate metrics updates
         setInterval(() => {
           const currentMetrics = get().metrics;
