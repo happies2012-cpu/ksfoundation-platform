@@ -40,6 +40,7 @@ const AdminAudit = lazy(() => import("./pages/admin/AdminAudit"));
 const UserSettings = lazy(() => import("./pages/settings/UserSettings"));
 const SecuritySettings = lazy(() => import("./pages/settings/SecuritySettings"));
 const BillingHistory = lazy(() => import("./pages/settings/BillingHistory"));
+const DebugDB = lazy(() => import("./pages/DebugDB"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -60,6 +61,8 @@ const AppRoutes = () => {
         <Route path="/wordpress-hosting" element={<WordPressHosting />} />
         <Route path="/cloud-hosting" element={<CloudHosting />} />
         <Route path="/domains" element={<Domains />} />
+        <Route path="/billing" element={<BillingPlans />} />
+        <Route path="/debug" element={<DebugDB />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

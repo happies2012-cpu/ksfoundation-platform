@@ -43,8 +43,20 @@ export const paymentApi = {
   },
 
   async cancelSubscription(subscriptionId: string) {
-    // Cancel Stripe subscription
     return { cancelled: true };
   },
+};
+
+export interface UpiTransaction {
+  id: string;
+  vpa: string;
+  amount: number;
+  status: 'pending' | 'success' | 'failed';
+  timestamp: string;
+}
+
+export const upiConfig = {
+  vpa: "8884162999-4@ybl",
+  name: "KSFoundation"
 };
 
