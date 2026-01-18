@@ -3,7 +3,7 @@ import sys
 import os
 
 # Connection string provided by user
-dsn = "postgres://postgres:XN1nPJXNVebe4HRJ7uV4FpOMo0JMSEHZlFy81v0nDUoFjiKyEHhDMbBaPY9ChHWj@supabase.guideitsol.com:5432/postgres"
+dsn = "postgresql://postgres:XN1nPJXNVebe4HRJ7uV4FpOMo0JMSEHZlFy81v0nDUoFjiKyEHhDMbBaPY9ChHWj@db.qszwmkspmamcvktkjprf.supabase.co:5432/postgres"
 
 print(f"🔌 Attempting connection to: {dsn.split('@')[1]}")
 
