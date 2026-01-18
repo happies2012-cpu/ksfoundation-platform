@@ -4,19 +4,6 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-// Re-enable service worker
-// if ('serviceWorker' in navigator) {
-//   window.addEventListener('load', () => {
-//     navigator.serviceWorker.register('/sw.js')
-//       .then((registration) => {
-//         console.log('SW registered: ', registration);
-//       })
-//       .catch((registrationError) => {
-//         console.log('SW registration failed: ', registrationError);
-//       });
-//   });
-// }
-
 // CRITICAL: Global Error Handler for Production Debugging
 window.onerror = function (msg, url, line, col, error) {
   const root = document.getElementById('root');
@@ -30,11 +17,42 @@ window.onerror = function (msg, url, line, col, error) {
   }
 };
 
+// Simple Error Boundary Component
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean, error: any }> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error: any, errorInfo: any) {
+    console.error("React Error Boundary Caught:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: 20, background: 'red', color: 'white' }}>
+          <h1>Something went wrong.</h1>
+          <pre>{this.state.error?.toString()}</pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 try {
   const rootElement = document.getElementById("root");
   if (!rootElement) throw new Error("Root element not found");
 
-  createRoot(rootElement).render(<App />);
+  createRoot(rootElement).render(
+    <React.StrictMode>
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    </React.StrictMode>
+  );
 } catch (error: any) {
   console.error("CRITICAL RENDER ERROR:", error);
   document.body.innerHTML = `<div style="color:white; background:red; padding:20px; font-family:monospace;">
