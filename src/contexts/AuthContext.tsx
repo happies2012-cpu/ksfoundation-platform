@@ -9,6 +9,10 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  signInWithFacebook: () => Promise<void>;
+  signInWithLinkedIn: () => Promise<void>;
+  signInWithPhone: (phone: string) => Promise<void>;
+  verifyOTP: (phone: string, token: string) => Promise<void>;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
   signOut: () => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -70,6 +74,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Note: Google OAuth redirect will handle the rest
   };
 
+  const signInWithFacebook = async () => {
+    await authApi.signInWithFacebook();
+  };
+
+  const signInWithLinkedIn = async () => {
+    await authApi.signInWithLinkedIn();
+  };
+
+  const signInWithPhone = async (phone: string) => {
+    await authApi.signInWithPhone(phone);
+  };
+
+  const verifyOTP = async (phone: string, token: string) => {
+    await authApi.verifyOTP(phone, token);
+    await refreshUser();
+  };
+
   const signUp = async (email: string, password: string, fullName: string) => {
     await authApi.signUp(email, password, fullName);
     await refreshUser();
@@ -90,6 +111,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         loading,
         signIn,
         signInWithGoogle,
+        signInWithFacebook,
+        signInWithLinkedIn,
+        signInWithPhone,
+        verifyOTP,
         signUp,
         signOut,
         refreshUser,

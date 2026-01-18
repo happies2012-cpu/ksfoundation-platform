@@ -37,6 +37,46 @@ export const authApi = {
     return data;
   },
 
+  async signInWithFacebook() {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'facebook',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+    if (error) throw error;
+    return data;
+  },
+
+  async signInWithLinkedIn() {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'linkedin_oidc',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+    if (error) throw error;
+    return data;
+  },
+
+  async signInWithPhone(phone: string) {
+    const { data, error } = await supabase.auth.signInWithOtp({
+      phone,
+    });
+    if (error) throw error;
+    return data;
+  },
+
+  async verifyOTP(phone: string, token: string) {
+    const { data, error } = await supabase.auth.verifyOtp({
+      phone,
+      token,
+      type: 'sms',
+    });
+    if (error) throw error;
+    return data;
+  },
+
   async signOut() {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
@@ -50,13 +90,13 @@ export const authApi = {
   async getCurrentUser() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return null;
-    
+
     const { data, error } = await supabase
       .from('users')
       .select('*')
       .eq('id', user.id)
       .single();
-    
+
     if (error) throw error;
     return data as User;
   },
@@ -71,7 +111,7 @@ export const userApi = {
       .eq('id', userId)
       .select()
       .single();
-    
+
     if (error) throw error;
     return data;
   },
@@ -80,13 +120,13 @@ export const userApi = {
     const fileExt = file.name.split('.').pop();
     const fileName = `${userId}/avatar.${fileExt}`;
     const filePath = `avatars/${fileName}`;
-    
+
     const { error: uploadError } = await supabase.storage
       .from('avatars')
       .upload(filePath, file, { upsert: true });
-      
+
     if (uploadError) throw uploadError;
-    
+
     const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
     return data.publicUrl;
   }
@@ -391,11 +431,11 @@ export const tasksApi = {
           .select('name')
           .eq('id', workspaceId)
           .single();
-          
+
         if (workspaceData) {
           await emailService.sendTaskAssignment(
-            assigneeData as User, 
-            data.title, 
+            assigneeData as User,
+            data.title,
             workspaceData.name
           );
         }
@@ -450,11 +490,11 @@ export const tasksApi = {
           .select('name')
           .eq('id', data.workspace_id)
           .single();
-          
+
         if (workspaceData) {
           await emailService.sendTaskAssignment(
-            assigneeData as User, 
-            data.title, 
+            assigneeData as User,
+            data.title,
             workspaceData.name
           );
         }
