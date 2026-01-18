@@ -1,0 +1,28 @@
+{
+  "hero": {
+    "title": "Own Your Digital Life",
+    "subtitle": "The Ultimate Self-Hosting & Private Cloud Solution for Families and Businesses. Escape Big Tech surveillance.",
+    "getStarted": "Start Your Freedom Journey",
+    "demo": "Watch Safety Demo"
+  },
+  "mission": {
+    "selfHosting": {
+      "title": "True Self-Hosting",
+      "desc": "Your data, your rules. Run your own datacenter at home with enterprise-grade hardware support. No third-party access, ever."
+    },
+    "privacy": {
+      "title": "Uncompromised Privacy",
+      "desc": "End-to-end encryption for everything. We don't track you, scan your files, or sell your data. You are the only admin."
+    },
+    "childSafety": {
+      "title": "Child Safety First",
+      "desc": "Create a safe digital environment for your kids. Filter harmful content, block social media trackers, and monitor safety without invading privacy."
+    }
+  },
+  "features": {
+    "privateCloud": "Private Cloud Storage",
+    "homeServer": "Home Server Management",
+    "secureMail": "Encrypted Email",
+    "vpn": "Family VPN Mesh"
+  }
+}

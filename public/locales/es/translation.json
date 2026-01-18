@@ -1,0 +1,14 @@
+{
+  "hero": {
+    "title": "Dueño de tu vida digital",
+    "subtitle": "La solución definitiva de autohospedaje y nube privada. Escapa de la vigilancia tecnológica.",
+    "getStarted": "Comienza tu viaje",
+    "demo": "Ver demostración"
+  },
+  "mission": {
+    "selfHosting": {
+      "title": "Verdadero Autohospedaje",
+      "desc": "Tus datos, tus reglas. Ejecuta tu propio centro de datos en casa."
+    }
+  }
+}

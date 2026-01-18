@@ -1,58 +1,25 @@
-const CACHE_NAME = 'taskflow-v1';
+const CACHE_NAME = 'ksr-foundation-v1';
 const urlsToCache = [
   '/',
   '/index.html',
+  '/manifest.json'
 ];
 
-self.addEventListener('install', (event) => {
-  console.log('Service Worker installing...');
+self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
-      .catch((error) => {
-        console.error('Failed to cache:', error);
-      })
+      .then(cache => cache.addAll(urlsToCache))
   );
 });
 
-self.addEventListener('fetch', (event) => {
-  // Skip caching for development
-  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-    return;
-  }
-  
+self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
-      .then((response) => {
+      .then(response => {
         if (response) {
           return response;
         }
         return fetch(event.request);
       })
-      .catch(() => {
-        // Fallback for offline access
-        if (event.request.mode === 'navigate') {
-          return caches.match('/');
-        }
-      })
-  );
-});
-
-self.addEventListener('activate', (event) => {
-  console.log('Service Worker activating...');
-  const cacheWhitelist = [CACHE_NAME];
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
   );
 });

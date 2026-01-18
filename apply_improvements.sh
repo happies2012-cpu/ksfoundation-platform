@@ -1,6 +1,121 @@
+#!/bin/bash
+
+# Install additional dependencies
+echo "Installing dependencies..."
+npm install react-helmet-async react-error-boundary workbox-window
+
+# Create directories
+mkdir -p src/components/common
+mkdir -p src/components/seo
+
+# 1. Create Loading Component (UI/UX - Skeletons/Loading)
+echo "Creating Loading Component..."
+cat << 'EOF' > src/components/common/LoadingFallback.tsx
+import { Loader2 } from "lucide-react";
+
+export const LoadingFallback = () => {
+  return (
+    <div className="flex items-center justify-center min-h-[50vh]">
+      <div className="flex flex-col items-center gap-2">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-muted-foreground text-sm">Loading content...</p>
+      </div>
+    </div>
+  );
+};
+EOF
+
+# 2. Create Error Boundary Component (Code Quality)
+echo "Creating Error Boundary Component..."
+cat << 'EOF' > src/components/common/GlobalErrorBoundary.tsx
+import { useRouteError } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle } from "lucide-react";
+
+export const GlobalErrorBoundary = () => {
+  const error = useRouteError() as any;
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 space-y-4 text-center">
+      <div className="p-4 rounded-full bg-destructive/10">
+        <AlertTriangle className="w-12 h-12 text-destructive" />
+      </div>
+      <h1 className="text-2xl font-bold">Something went wrong</h1>
+      <p className="text-muted-foreground max-w-md">
+        {error?.message || "An unexpected error occurred. Please try again later."}
+      </p>
+      <Button onClick={() => window.location.reload()} variant="outline">
+        Reload Page
+      </Button>
+    </div>
+  );
+};
+EOF
+
+# 3. Create SEO Component (SEO)
+echo "Creating SEO Component..."
+cat << 'EOF' > src/components/seo/SEO.tsx
+import { Helmet } from 'react-helmet-async';
+
+interface SEOProps {
+  title: string;
+  description?: string;
+  name?: string;
+  type?: string;
+}
+
+export const SEO = ({ title, description, name = 'KSR Foundation', type = 'article' }: SEOProps) => {
+  return (
+    <Helmet>
+      <title>{title} | {name}</title>
+      <meta name='description' content={description} />
+      <meta property='og:type' content={type} />
+      <meta property='og:title' content={title} />
+      <meta property='og:description' content={description} />
+      <meta name='twitter:creator' content={name} />
+      <meta name='twitter:card' content={type} />
+      <meta name='twitter:title' content={title} />
+      <meta name='twitter:description' content={description} />
+    </Helmet>
+  );
+};
+EOF
+
+# 4. Create Service Worker (Performance)
+echo "Creating Service Worker..."
+cat << 'EOF' > public/sw.js
+const CACHE_NAME = 'ksr-foundation-v1';
+const urlsToCache = [
+  '/',
+  '/index.html',
+  '/manifest.json'
+];
+
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+  );
+});
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
+      })
+  );
+});
+EOF
+
+# 5. Overwrite App.tsx with Lazy Loading and Providers (Performance)
+echo "Updating App.tsx with Lazy Loading and Providers..."
+cat << 'EOF' > src/App.tsx
 import { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MarketingPage from "./pages/Marketing";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
 import { Toaster } from "@/components/ui/toaster";
@@ -11,7 +126,6 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute, AdminRoute } from "@/components/auth/ProtectedRoute";
 import { useRealtimeStore } from "@/store";
 import { LoadingFallback } from "@/components/common/LoadingFallback";
-import "./i18n"; // Import i18n configuration
 
 // Lazy Load Pages
 const Index = lazy(() => import("./pages/Index"));
@@ -55,7 +169,6 @@ const AppRoutes = () => {
     <Suspense fallback={<LoadingFallback />}>
       <Routes>
         <Route path="/" element={<Index />} />
-        <Route path="/marketing" element={<MarketingPage />} />
         <Route path="/vps" element={<VPSHosting />} />
         <Route path="/wordpress-hosting" element={<WordPressHosting />} />
         <Route path="/cloud-hosting" element={<CloudHosting />} />
@@ -64,7 +177,7 @@ const AppRoutes = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/onboarding" element={<Onboarding />} />
-
+        
         {/* Protected Routes */}
         <Route path="/ai-lab" element={<ProtectedRoute requiredPermission={{ resource: 'ai-lab', action: 'read' }}><AiLab /></ProtectedRoute>} />
         <Route path="/industries/:id" element={<ProtectedRoute><IndustryDetail /></ProtectedRoute>} />
@@ -77,7 +190,7 @@ const AppRoutes = () => {
         <Route path="/dashboard/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
         <Route path="/dashboard/billing" element={<ProtectedRoute><Billing /></ProtectedRoute>} />
         <Route path="/dashboard/billing/plans" element={<ProtectedRoute><BillingPlans /></ProtectedRoute>} />
-
+        
         {/* Settings Sub-routes */}
         <Route path="/settings/profile" element={<ProtectedRoute requiredPermission={{ resource: 'settings', action: 'read' }}><UserSettings /></ProtectedRoute>} />
         <Route path="/settings/security" element={<ProtectedRoute requiredPermission={{ resource: 'settings', action: 'read' }}><SecuritySettings /></ProtectedRoute>} />
@@ -96,27 +209,25 @@ const AppRoutes = () => {
 
 const App = () => {
   return (
-    <div className="bg-premium-animate min-h-screen text-foreground antialiased relative selection:bg-primary selection:text-white">
-      <div className="noise-overlay" />
-      <div className="relative z-10">
-        <QueryClientProvider client={queryClient}>
-          <HelmetProvider>
-            <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-              <AuthProvider>
-                <TooltipProvider>
-                  <Toaster />
-                  <Sonner />
-                  <BrowserRouter>
-                    <AppRoutes />
-                  </BrowserRouter>
-                </TooltipProvider>
-              </AuthProvider>
-            </ThemeProvider>
-          </HelmetProvider>
-        </QueryClientProvider>
-      </div>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <HelmetProvider>
+        <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+          <AuthProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <AppRoutes />
+              </BrowserRouter>
+            </TooltipProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </HelmetProvider>
+    </QueryClientProvider>
   );
 };
 
 export default App;
+EOF
+
+echo "All tasks applied successfully!"
