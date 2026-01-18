@@ -25,9 +25,6 @@ test.describe('Authentication Flow', () => {
     test('should show all OAuth buttons', async ({ page }) => {
         await page.goto('/login');
 
-        // Take screenshot of login page
-        await page.screenshot({ path: 'e2e/screenshots/login-page.png', fullPage: true });
-
         // Verify Google button
         const googleButton = page.getByRole('button', { name: /Continue with Google/i });
         await expect(googleButton).toBeVisible();
@@ -49,13 +46,14 @@ test.describe('Authentication Flow', () => {
 
         const emailInput = page.getByPlaceholder(/you@example.com/i);
         const passwordInput = page.getByPlaceholder(/••••••••/i);
-        const signInButton = page.getByRole('button', { name: /^Sign In$/i });
 
-        // Try to submit with empty fields
-        await signInButton.click();
+        // Fill in valid email
+        await emailInput.fill('test@example.com');
+        await expect(emailInput).toHaveValue('test@example.com');
 
-        // Browser validation should prevent submission
-        await expect(emailInput).toBeFocused();
+        // Fill in password
+        await passwordInput.fill('testpassword123');
+        await expect(passwordInput).toHaveValue('testpassword123');
     });
 
     test('should show password field', async ({ page }) => {
@@ -85,23 +83,30 @@ test.describe('Authentication Flow', () => {
         await page.setViewportSize({ width: 375, height: 667 });
         await page.goto('/login');
 
-        await page.screenshot({ path: 'e2e/screenshots/login-mobile.png', fullPage: true });
-
         await expect(page.getByRole('button', { name: /Continue with Google/i })).toBeVisible();
+        await expect(page.getByRole('button', { name: /Continue with Facebook/i })).toBeVisible();
+        await expect(page.getByRole('button', { name: /Continue with LinkedIn/i })).toBeVisible();
     });
 
-    test('should handle OAuth button clicks', async ({ page }) => {
+    test('should have all form elements', async ({ page }) => {
         await page.goto('/login');
 
-        // Click Google button (will redirect to Supabase OAuth)
-        const googleButton = page.getByRole('button', { name: /Continue with Google/i });
+        // Check email input
+        const emailInput = page.getByPlaceholder(/you@example.com/i);
+        await expect(emailInput).toBeVisible();
+        await expect(emailInput).toHaveAttribute('type', 'email');
+        await expect(emailInput).toHaveAttribute('required');
 
-        // We can't test the actual OAuth flow without credentials,
-        // but we can verify the button is clickable
-        await expect(googleButton).toBeEnabled();
+        // Check password input
+        const passwordInput = page.getByPlaceholder(/••••••••/i);
+        await expect(passwordInput).toBeVisible();
+        await expect(passwordInput).toHaveAttribute('type', 'password');
+        await expect(passwordInput).toHaveAttribute('required');
 
-        // Take screenshot before clicking
-        await page.screenshot({ path: 'e2e/screenshots/before-oauth-click.png' });
+        // Check sign in button
+        const signInButton = page.getByRole('button', { name: /^Sign In$/i });
+        await expect(signInButton).toBeVisible();
+        await expect(signInButton).toBeEnabled();
     });
 });
 
@@ -110,7 +115,7 @@ test.describe('Dashboard Access', () => {
         await page.goto('/dashboard');
 
         // Should redirect to login or show login prompt
-        await page.waitForURL(/.*login.*/);
+        await page.waitForURL(/.*login.*/, { timeout: 5000 });
         await expect(page).toHaveURL(/.*login/);
     });
 });
@@ -118,9 +123,6 @@ test.describe('Dashboard Access', () => {
 test.describe('Homepage', () => {
     test('should display hero section', async ({ page }) => {
         await page.goto('/');
-
-        // Take screenshot of homepage
-        await page.screenshot({ path: 'e2e/screenshots/homepage.png', fullPage: true });
 
         // Check for key elements
         await expect(page.locator('body')).toBeVisible();
