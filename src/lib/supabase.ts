@@ -1,55 +1,32 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://supabase.guideitsol.com';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key';
-
-// Check if we are using placeholders
-const isPlaceholder = supabaseUrl.includes('placeholder') || supabaseUrl === 'https://your-project.supabase.co';
-
-export const supabase = isPlaceholder
-  ? (() => {
-    console.warn('⚠️  Supabase Config Missing: Using Mock Client. Auth & DB will not work.');
-    const mockSubscription = { unsubscribe: () => { } };
-    const authMock = {
-      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-      onAuthStateChange: () => ({ data: { subscription: mockSubscription } }),
-      signInWithPassword: () => Promise.resolve({ data: { user: null, session: null }, error: new Error("Mock Auth Failed") }),
-      signUp: () => Promise.resolve({ data: { user: null, session: null }, error: new Error("Mock Auth Failed") }),
-      signOut: () => Promise.resolve({ error: null }),
-    };
-
-    return {
-      auth: authMock,
-      from: () => ({
-        select: () => ({
-          data: [],
-          error: null,
-          eq: () => ({ data: [], error: null, single: () => ({ data: null, error: null }) }),
-          order: () => ({ data: [], error: null }),
-          limit: () => ({ data: [], error: null })
-        }),
-        insert: () => ({ data: null, error: null, select: () => ({ data: null, error: null }) }),
-        update: () => ({ data: null, error: null, select: () => ({ data: null, error: null }) }),
-        delete: () => ({ data: null, error: null }),
-      }),
-      channel: () => ({
-        on: () => ({ subscribe: () => { } }),
-        subscribe: () => { }
-      })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any;
-  })()
-  : createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-      persistSession: true,
-      autoRefreshToken: true,
-    },
-    realtime: {
-      params: {
-        eventsPerSecond: 10,
-      },
-    },
-  });
+// SAFE MOCK FOR PRODUCTION DEBUGGING
+console.log('🔌 Initializing Supabase Client (Mock Mode)');
+export const supabase = {
+  auth: {
+    getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => { } } } }),
+    signInWithPassword: () => Promise.resolve({ data: { user: null, session: null }, error: new Error("Mock Auth") }),
+    signUp: () => Promise.resolve({ data: { user: null, session: null }, error: new Error("Mock Auth") }),
+    signOut: () => Promise.resolve({ error: null }),
+  },
+  from: () => ({
+    select: () => ({
+      data: [],
+      error: null,
+      eq: () => ({ data: [], error: null, single: () => ({ data: null, error: null }) }),
+      order: () => ({ data: [], error: null }),
+      limit: () => ({ data: [], error: null })
+    }),
+    insert: () => ({ data: null, error: null, select: () => ({ data: null, error: null }) }),
+    update: () => ({ data: null, error: null, select: () => ({ data: null, error: null }) }),
+    delete: () => ({ data: null, error: null }),
+  }),
+  channel: () => ({
+    on: () => ({ subscribe: () => { } }),
+    subscribe: () => { }
+  })
+} as any;
 
 // Database Types
 export interface User {
