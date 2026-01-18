@@ -17,15 +17,28 @@ import "./index.css";
 //   });
 // }
 
+// CRITICAL: Global Error Handler for Production Debugging
+window.onerror = function (msg, url, line, col, error) {
+  const root = document.getElementById('root');
+  if (root) {
+    root.innerHTML = \`<div style="color:red; padding:20px; font-family:monospace; font-size:16px; background:#fff; white-space:pre-wrap;">
+      <h1>CRITICAL ERROR (Global)</h1>
+      <p style="font-weight:bold">\${msg}</p>
+      <p>Location: \${url} : \${line}:\${col}</p>
+      <p>Stack: \${error?.stack || 'No stack trace'}</p>
+    </div>\`;
+  }
+};
+
 try {
   const rootElement = document.getElementById("root");
   if (!rootElement) throw new Error("Root element not found");
 
   createRoot(rootElement).render(<App />);
-} catch (error) {
+} catch (error: any) {
   console.error("CRITICAL RENDER ERROR:", error);
-  document.body.innerHTML = `< div style = "color: red; padding: 20px; font-family: monospace;" >
+  document.body.innerHTML = \`<div style="color:white; background:red; padding:20px; font-family:monospace;">
     <h1>Application Failed to Start</h1>
-    <pre>${error instanceof Error ? error.stack : String(error)}</pre>
-  </div > `;
+    <pre>\${error?.stack || error.message || String(error)}</pre>
+  </div>\`;
 }
