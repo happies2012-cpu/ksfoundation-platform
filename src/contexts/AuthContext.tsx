@@ -38,16 +38,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    // Initialize auth state from local storage token
-    const initAuth = async () => {
-      try {
+    // Get initial session
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      setSupabaseUser(session?.user ?? null);
+      if (session?.user) {
         await refreshUser();
-      } catch (error) {
-        console.error('Auth initialization error:', error);
+      } else {
         setLoading(false);
       }
-    };
-    initAuth();
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      setSupabaseUser(session?.user ?? null);
+      if (session?.user) {
+        await refreshUser();
+      } else {
+        setUser(null);
+        setLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const signIn = async (email: string, password: string) => {

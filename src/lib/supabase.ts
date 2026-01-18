@@ -1,43 +1,58 @@
 import { createClient } from '@supabase/supabase-js';
 
-// SAFE MOCK FOR PRODUCTION DEBUGGING
-console.log('🔌 Initializing Supabase Client (Mock Mode)');
-export const supabase = {
-  auth: {
-    getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-    getUser: () => Promise.resolve({ data: { user: null }, error: null }),
-    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => { } } } }),
-    signInWithPassword: () => Promise.resolve({ data: { user: null, session: null }, error: new Error("Supabase is disabled. Using local backend.") }),
-    signUp: () => Promise.resolve({ data: { user: null, session: null }, error: new Error("Supabase is disabled. Using local backend.") }),
-    signInWithOAuth: () => Promise.reject(new Error("OAuth not configured in local backend yet.")),
-    signInWithOtp: () => Promise.reject(new Error("OTP not configured in local backend yet.")),
-    verifyOtp: () => Promise.reject(new Error("OTP not configured in local backend yet.")),
-    resetPasswordForEmail: () => Promise.reject(new Error("Reset password not configured in local backend yet.")),
-    signOut: () => Promise.resolve({ error: null }),
-  },
-  storage: {
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://supabase.guideitsol.com';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// Check if credentials are valid (not placeholder)
+const isValidConfig = supabaseUrl && supabaseAnonKey &&
+  !supabaseUrl.includes('placeholder') &&
+  !supabaseAnonKey.includes('placeholder');
+
+if (!isValidConfig) {
+  console.warn('⚠️ Supabase credentials missing or invalid. Auth will fail.');
+}
+
+// Create client if config is valid, otherwise use a safe mock that throws specific errors
+export const supabase = isValidConfig
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : {
+    auth: {
+      getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+      getUser: () => Promise.resolve({ data: { user: null }, error: null }),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => { } } } }),
+      signInWithPassword: () => Promise.reject(new Error("Supabase Anon Key missing. Check .env")),
+      signUp: () => Promise.reject(new Error("Supabase Anon Key missing. Check .env")),
+      signInWithOAuth: () => Promise.reject(new Error("Supabase Anon Key missing. Check .env")),
+      signInWithOtp: () => Promise.reject(new Error("Supabase Anon Key missing. Check .env")),
+      verifyOtp: () => Promise.reject(new Error("Supabase Anon Key missing. Check .env")),
+      signOut: () => Promise.resolve({ error: null }),
+      resetPasswordForEmail: () => Promise.reject(new Error("Supabase Anon Key missing. Check .env")),
+    },
     from: () => ({
-      upload: () => Promise.resolve({ data: null, error: null }),
-      getPublicUrl: () => ({ data: { publicUrl: '' } })
-    })
-  },
-  from: () => ({
-    select: () => ({
-      data: [],
-      error: null,
-      eq: () => ({ data: [], error: null, single: () => ({ data: null, error: null }) }),
-      order: () => ({ data: [], error: null }),
-      limit: () => ({ data: [], error: null })
+      select: () => ({
+        data: [],
+        error: null,
+        eq: () => ({ data: null, error: null, single: () => ({ data: null, error: null }) }),
+        order: () => ({ data: [], error: null }),
+        limit: () => ({ data: [], error: null }),
+        maybeSingle: () => ({ data: null, error: null })
+      }),
+      insert: () => ({ data: null, error: null, select: () => ({ data: null, error: null, single: () => ({ data: null, error: null }) }) }),
+      update: () => ({ data: null, error: null, select: () => ({ data: null, error: null, single: () => ({ data: null, error: null }) }) }),
+      delete: () => ({ data: null, error: null }),
+      upsert: () => ({ data: null, error: null })
     }),
-    insert: () => ({ data: null, error: null, select: () => ({ data: null, error: null }) }),
-    update: () => ({ data: null, error: null, select: () => ({ data: null, error: null }) }),
-    delete: () => ({ data: null, error: null }),
-  }),
-  channel: () => ({
-    on: () => ({ subscribe: () => { } }),
-    subscribe: () => { }
-  })
-} as any;
+    storage: {
+      from: () => ({
+        upload: () => Promise.resolve({ data: null, error: null }),
+        getPublicUrl: () => ({ data: { publicUrl: '' } })
+      })
+    },
+    channel: () => ({
+      on: () => ({ subscribe: () => { } }),
+      subscribe: () => { }
+    })
+  } as any;
 
 // Database Types
 export interface User {

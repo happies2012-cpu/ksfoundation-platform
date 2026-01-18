@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Authentication Flow', () => {
     test.beforeEach(async ({ page }) => {
-        await page.goto('/');
+        await page.goto('/', { waitUntil: 'domcontentloaded' });
     });
 
     test('should load homepage successfully', async ({ page }) => {

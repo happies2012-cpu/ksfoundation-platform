@@ -3,106 +3,104 @@ import { emailService } from './email';
 
 // Auth API
 // Helper for Local Authentication
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
-
-const getHeaders = () => {
-  const token = localStorage.getItem('token');
-  return {
-    'Content-Type': 'application/json',
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
-  };
-};
-
+// Auth API
 export const authApi = {
   async signUp(email: string, password: string, fullName: string) {
-    const res = await fetch(`${API_URL}/auth/signup`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, full_name: fullName }),
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName,
+        },
+      },
     });
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.detail || 'Signup failed');
-    }
-
-    return res.json();
+    if (error) throw error;
+    return data;
   },
 
   async signIn(email: string, password: string) {
-    const formData = new URLSearchParams();
-    formData.append('username', email); // FastAPI OAuth2 expects 'username'
-    formData.append('password', password);
-
-    const res = await fetch(`${API_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: formData,
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
     });
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.detail || 'Login failed');
-    }
-
-    const data = await res.json();
-    localStorage.setItem('token', data.access_token);
+    if (error) throw error;
     return data;
   },
 
   async signInWithGoogle() {
-    alert("Google Login requires backend integration. Please implement OAuth endpoint.");
-    throw new Error("OAuth not implemented in backend");
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+    if (error) throw error;
+    return data;
   },
 
   async signInWithFacebook() {
-    alert("Facebook Login requires backend integration. Please implement OAuth endpoint.");
-    throw new Error("OAuth not implemented in backend");
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'facebook',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+    if (error) throw error;
+    return data;
   },
 
   async signInWithLinkedIn() {
-    alert("LinkedIn Login requires backend integration. Please implement OAuth endpoint.");
-    throw new Error("OAuth not implemented in backend");
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'linkedin_oidc',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    });
+    if (error) throw error;
+    return data;
   },
 
   async signInWithPhone(phone: string) {
-    alert("Phone Login requires backend SMS integration.");
-    throw new Error("Phone auth not implemented");
+    const { data, error } = await supabase.auth.signInWithOtp({
+      phone,
+    });
+    if (error) throw error;
+    return data;
   },
 
   async verifyOTP(phone: string, token: string) {
-    throw new Error("OTP verification not implemented");
+    const { data, error } = await supabase.auth.verifyOtp({
+      phone,
+      token,
+      type: 'sms',
+    });
+    if (error) throw error;
+    return data;
   },
 
   async signOut() {
-    localStorage.removeItem('token');
-    // Optional: Call backend logout if needed
-    try {
-      await fetch(`${API_URL}/auth/logout`, { method: 'POST', headers: getHeaders() });
-    } catch (e) {
-      // Ignore logout errors
-    }
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
   },
 
   async resetPassword(email: string) {
-    alert("Password reset email service not configured.");
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    if (error) throw error;
   },
 
   async getCurrentUser() {
-    const token = localStorage.getItem('token');
-    if (!token) return null;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
 
-    const res = await fetch(`${API_URL}/auth/me`, {
-      headers: getHeaders(),
-    });
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', user.id)
+      .single();
 
-    if (!res.ok) {
-      localStorage.removeItem('token');
-      return null;
-    }
-
-    const userData = await res.json();
-    return userData;
+    if (error) throw error;
+    return data as User;
   },
 };
 
