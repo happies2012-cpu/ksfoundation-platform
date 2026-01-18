@@ -44,11 +44,11 @@ BACKEND_PID=$!
 echo "   -> Backend running on Port 8000 (PID: $BACKEND_PID)"
 cd ..
 
-# Start Frontend (Production Preview)
-# Using production build for best performance verified by local tests
-nohup npm run preview -- --port 3000 --host > frontend.log 2>&1 &
+# Start Frontend (Dev Mode - Recovery)
+# Reverting to dev server since production build showed blank screen
+nohup npm run dev -- --port 3000 --host > frontend.log 2>&1 &
 FRONTEND_PID=$!
-echo "   -> Frontend running on Port 3000 (PID: $FRONTEND_PID) [Production Mode]"
+echo "   -> Frontend running on Port 3000 (PID: $FRONTEND_PID) [Dev Mode]"
 
 echo "==========================================="
 echo "✅ DEPLOYMENT COMPLETE"
