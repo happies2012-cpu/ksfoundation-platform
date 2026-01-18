@@ -23,30 +23,31 @@ export default defineConfig(({ mode }) => ({
     strictPort: false,
     cors: true,
   },
+  base: '/',
   plugins: [
     react(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
-      manifest: {
-        name: 'KSR Foundation',
-        short_name: 'KSR',
-        description: 'KSR Foundation - Premium Web Hosting & Cloud Services',
-        theme_color: '#ff6b35',
-        icons: [
-          {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
-        ]
-      }
-    }),
+    // VitePWA({
+    //   registerType: 'autoUpdate',
+    //   includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+    //   manifest: {
+    //     name: 'KSR Foundation',
+    //     short_name: 'KSR',
+    //     description: 'KSR Foundation - Premium Web Hosting & Cloud Services',
+    //     theme_color: '#ff6b35',
+    //     icons: [
+    //       {
+    //         src: 'pwa-192x192.png',
+    //         sizes: '192x192',
+    //         type: 'image/png'
+    //       },
+    //       {
+    //         src: 'pwa-512x512.png',
+    //         sizes: '512x512',
+    //         type: 'image/png'
+    //       }
+    //     ]
+    //   }
+    // }),
     visualizer({
       open: true,
       gzipSize: true,
