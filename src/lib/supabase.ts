@@ -5,10 +5,21 @@ console.log('🔌 Initializing Supabase Client (Mock Mode)');
 export const supabase = {
   auth: {
     getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+    getUser: () => Promise.resolve({ data: { user: null }, error: null }),
     onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => { } } } }),
-    signInWithPassword: () => Promise.resolve({ data: { user: null, session: null }, error: new Error("Mock Auth") }),
-    signUp: () => Promise.resolve({ data: { user: null, session: null }, error: new Error("Mock Auth") }),
+    signInWithPassword: () => Promise.resolve({ data: { user: null, session: null }, error: new Error("Supabase is disabled. Using local backend.") }),
+    signUp: () => Promise.resolve({ data: { user: null, session: null }, error: new Error("Supabase is disabled. Using local backend.") }),
+    signInWithOAuth: () => Promise.reject(new Error("OAuth not configured in local backend yet.")),
+    signInWithOtp: () => Promise.reject(new Error("OTP not configured in local backend yet.")),
+    verifyOtp: () => Promise.reject(new Error("OTP not configured in local backend yet.")),
+    resetPasswordForEmail: () => Promise.reject(new Error("Reset password not configured in local backend yet.")),
     signOut: () => Promise.resolve({ error: null }),
+  },
+  storage: {
+    from: () => ({
+      upload: () => Promise.resolve({ data: null, error: null }),
+      getPublicUrl: () => ({ data: { publicUrl: '' } })
+    })
   },
   from: () => ({
     select: () => ({
