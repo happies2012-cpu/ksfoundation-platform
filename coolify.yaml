@@ -7,3 +7,15 @@ services:
     env:
       VITE_APP_URL: "https://www.ksfoundation.space"
       VITE_API_URL: "https://api.ksfoundation.space/api/v1"
+
+  - name: "backend"
+    build_pack: "nixpacks"
+    repo: "."
+    branch: "main"
+    base_directory: "/backend"
+    start_command: "uv run uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    ports:
+      - "8000:8000"
+    env:
+      ALLOWED_ORIGINS: "https://www.ksfoundation.space,https://ksfoundation-platform.vercel.app,http://localhost:3000"
+      DOCS_URL: "/docs"
