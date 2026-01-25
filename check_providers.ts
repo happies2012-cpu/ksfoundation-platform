@@ -40,12 +40,25 @@ async function checkProvider(provider: any) {
     }
 }
 
+
 async function main() {
     console.log("Checking Supabase Provider Status...");
     console.log(await checkProvider('google'));
     console.log(await checkProvider('facebook'));
     console.log(await checkProvider('linkedin_oidc')); // LinkedIn is often linkedin_oidc now
-    console.log(await checkProvider('linkedin'));      // Check legacy too
+
+    // Check Phone
+    const { error } = await supabase.auth.signInWithOtp({ phone: '+12025550123' });
+    if (error && error.message.includes('sms_provider_not_found')) {
+        console.log('❌ Phone: Disabled (SMS Provider not found)');
+    } else if (error && error.message.includes('Signups not allowed')) {
+        console.log('❌ Phone: Disabled (Signups not allowed)');
+    } else if (error) {
+        console.log(`⚠️ Phone: Response: ${error.message}`);
+    } else {
+        console.log('✅ Phone: Enabled (OTP sent)');
+    }
 }
+
 
 main();

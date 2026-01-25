@@ -1,0 +1,9 @@
+name: "KSFoundation"
+services:
+  - name: "frontend"
+    build_pack: "nixpacks"
+    repo: "."
+    branch: "main"
+    env:
+      VITE_APP_URL: "https://www.ksfoundation.space"
+      VITE_API_URL: "https://api.ksfoundation.space/api/v1"
